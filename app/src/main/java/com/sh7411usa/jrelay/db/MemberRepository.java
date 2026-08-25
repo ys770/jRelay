@@ -118,6 +118,19 @@ public class MemberRepository {
         db.update(DbHelper.TABLE_MEMBERS, cv, "id = ?", new String[]{String.valueOf(id)});
     }
 
+    /** Rejoins a previously soft-removed member under the same row (same phone number, unique in the table). */
+    public void reactivate(long id, String nickname, String addedBy) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("nickname", nickname);
+        cv.put("added_by", addedBy);
+        cv.put("is_admin", 0);
+        cv.put("is_muted", 0);
+        cv.put("active", 1);
+        cv.putNull("removed_at");
+        db.update(DbHelper.TABLE_MEMBERS, cv, "id = ?", new String[]{String.valueOf(id)});
+    }
+
     private void updateColumn(long id, String column, int value) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();

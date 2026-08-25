@@ -144,7 +144,14 @@ public class CommandProcessor {
 
     /** Adds a member and sends the standard welcome/broadcast messages. addedByLabel is either an admin's nickname or "An Admin". */
     public void addMember(String normalizedPhone, String nickname, String addedByLabel) {
-        long id = memberRepository.insert(normalizedPhone, nickname, false, addedByLabel);
+        Member existing = memberRepository.findByPhone(normalizedPhone);
+        long id;
+        if (existing != null && !existing.active) {
+            memberRepository.reactivate(existing.id, nickname, addedByLabel);
+            id = existing.id;
+        } else {
+            id = memberRepository.insert(normalizedPhone, nickname, false, addedByLabel);
+        }
         Member newMember = memberRepository.findById(id);
         String groupName = prefs.getGroupName();
         enqueue(newMember, context.getString(R.string.tpl_added_you, addedByLabel, groupName), "SYSTEM");
