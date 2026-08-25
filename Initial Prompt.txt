@@ -1,0 +1,29 @@
+You are building an SMS relay android app.
+This app's purpose is to allow an android phone to function as a relay for a group sms conversation for a single group.
+When one member texts the host device, it will forward the message to all members (except for the sender).
+Admin messages can also be sent from within the app.
+Membership can be managed from within the app as well.
+The main activity shows a dashboard with statistics, and a scrollable view of recent messages, there is also an add member shortcut. It also has the group name at the top, and an edit button where the name can be changed.
+On the membership screen, there is a list of members. An badge indicates admins. Tapping a member brings up the member detail screen where they can be made admin, demoted, muted/unmuted, removed, sent a DM, phone number or nickname changed. It also shows their recent activity and statistics, including how active they are. There is also an option to export contact, call, or text them from default SMS app.
+Admins can add or remove members by sending "#add +12345678910 nick name". Allow for multiple number formats, like:
++12345678910
++1 (234) 567-8910
+1-234-567-8910
+234-567-8910
+2345678910
+(234) 567-8910
+And all other common US phone number formats.
+Allow spaces in nickname.
+Use SQLite DB to store info.
+Admins can remove members by sending "#remove nick name" or "#remove number".
+Whenever an member is added or removed, everyone else gets a message "<admin nickname> added <user> to the group." or "<admin nickname> removed <user> from the group." The user gets a message saying "<admin name> added you to <group name> Group. Reply #stop at anytime to opt out." or "You have been removed from  <group name> Group. You will no longer receive messages from this Group."
+If added from within the app use the name "An Admin" in place of nick name.
+All members can send the following commands:
+#commands for a list of commands
+#mute to pause messages - they get a response confirming they are muted and can send #unmute to continue.
+#unmute to unmute, sends a confirmation message.
+#stop - removes them from the group, they get a confirmation that they were removed, and everyone else gets a notification that they left the group.
+#list - new line delimited list of members, nick names only - no phone numbers! (You) indicates which member is you, and (admin) indicates which member is admin.
+Add another screen for rate limiting and staggering, where user can configure how many messages are sent at once, and how many seconds to wait in between burst, allowing the user to define random waits within defined parameters. This neccessitates a buffer. If the app is granted write scure settings, allow the user to configure android internal rate limiting, otherwise advise them what the ADB command is to grant the app this permission. Show the current value.
+any message that begins with #admin is only sent to admins, and also pops up a notification on the app.
+On first run, prompt for necessary permissions and warn the user that the app runs over SMS and message and data rates may apply, and that it is their duty to comply with all aplicable laws and carrier policies regarding automated messaging and spam. The developer takes no responsibility whatsoever (rephrase that in better legal terms). They must accept this warning to use the app, otherwise close the app and display it again next time app is opened.
