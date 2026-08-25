@@ -66,6 +66,31 @@ public class OutboxRepository {
         return list;
     }
 
+    /** Messages still waiting to go out: not yet claimed for sending, or currently mid-send. */
+    public int countUnsent() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT COUNT(*) FROM " + DbHelper.TABLE_OUTBOX +
+                " WHERE status IN ('PENDING', 'SENDING')", null);
+        int count = 0;
+        if (c.moveToFirst()) {
+            count = c.getInt(0);
+        }
+        c.close();
+        return count;
+    }
+
+    public int countPending() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT COUNT(*) FROM " + DbHelper.TABLE_OUTBOX +
+                " WHERE status = 'PENDING'", null);
+        int count = 0;
+        if (c.moveToFirst()) {
+            count = c.getInt(0);
+        }
+        c.close();
+        return count;
+    }
+
     public void markSent(long id) {
         updateStatus(id, "SENT");
     }

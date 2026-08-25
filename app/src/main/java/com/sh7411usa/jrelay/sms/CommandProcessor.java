@@ -200,6 +200,16 @@ public class CommandProcessor {
         SmsSendService.start(context);
     }
 
+    /** Sends an admin message to every active member, regardless of mute state. */
+    public void broadcastToGroup(String body) {
+        String formatted = context.getString(R.string.tpl_dm_prefix, body);
+        List<Member> members = memberRepository.getActiveMembers();
+        for (Member m : members) {
+            enqueue(m, formatted, "ADMIN");
+        }
+        SmsSendService.start(context);
+    }
+
     private void relayPlainMessage(Member sender, String body) {
         String formatted = context.getString(R.string.tpl_relay_prefix, sender.nickname, body);
         broadcastExcept(sender.id, formatted, "RELAY");

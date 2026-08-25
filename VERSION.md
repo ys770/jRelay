@@ -1,5 +1,14 @@
 # Version History
 
+## 1.3 - Send Queue Visibility, Burst Randomization, Initial Delay, Group Broadcast
+
+- Dashboard now shows live queue depth ("Messages in Queue") and a live countdown to the next burst ("Next burst in Xs/Xm Ys (N messages)"), updated every second while the screen is visible. Backed by a new in-memory `SendQueueStatus` holder that `SmsSendService` publishes to as it schedules each wait.
+- Rate Limiting screen's single "messages per burst" field is now a random range: **Minimum** and **Maximum** messages per burst (`Prefs.burstMin`/`burstMax`), matching the existing min/max wait-time randomization. `SmsSendService` picks a random burst size in that range before each burst.
+- Added an **initial delay** checkbox (checked by default) on Rate Limiting: when enabled, jRelay waits a random duration (drawn from the same min/max wait-between-bursts range) before sending the very first burst of a new send cycle, instead of relaying immediately. Unchecked sends right away.
+- Every EditText on the Rate Limiting screen now has a small bold header label above it (in addition to its hint) so the field's purpose stays visible once text is entered.
+- Added **Send to Group**: a dashboard button opens a dedicated `SendGroupMessageActivity` where an admin composes a message that's sent (as `[Admin]: ...`) to every active member regardless of mute state, via `CommandProcessor.broadcastToGroup`.
+- Added `OutboxRepository.countUnsent()`/`countPending()` to back the new queue-depth display.
+
 ## 1.2 - Documentation
 
 - Added `README.md` documenting all features (dashboard, membership, member detail, add member, rate limiting), the full command list with exact syntax and message templates, mute/removal semantics, permissions, and build instructions.

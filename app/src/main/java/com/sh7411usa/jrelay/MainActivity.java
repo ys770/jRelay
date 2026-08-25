@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +15,10 @@ import android.widget.TextView;
 
 import com.sh7411usa.jrelay.db.MemberRepository;
 import com.sh7411usa.jrelay.db.MessageRepository;
+import com.sh7411usa.jrelay.db.OutboxRepository;
 import com.sh7411usa.jrelay.model.Member;
 import com.sh7411usa.jrelay.model.MessageRecord;
+import com.sh7411usa.jrelay.sms.SendQueueStatus;
 import com.sh7411usa.jrelay.util.Prefs;
 
 import java.util.List;
@@ -22,9 +26,12 @@ import java.util.concurrent.TimeUnit;
 
 public class MainActivity extends Activity {
 
+    private static final long QUEUE_STATUS_TICK_MS = 1000;
+
     private Prefs prefs;
     private MemberRepository memberRepository;
     private MessageRepository messageRepository;
+    private OutboxRepository outboxRepository;
 
     private TextView groupNameView;
     private TextView statsMembersView;
@@ -32,7 +39,18 @@ public class MainActivity extends Activity {
     private TextView statsMutedView;
     private TextView statsMessagesTodayView;
     private TextView statsMessagesTotalView;
+    private TextView queueCountView;
+    private TextView nextBurstView;
     private LinearLayout recentActivityContainer;
+
+    private final Handler queueStatusHandler = new Handler(Looper.getMainLooper());
+    private final Runnable queueStatusTick = new Runnable() {
+        @Override
+        public void run() {
+            refreshQueueStatus();
+            queueStatusHandler.postDelayed(this, QUEUE_STATUS_TICK_MS);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +65,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         memberRepository = new MemberRepository(this);
         messageRepository = new MessageRepository(this);
+        outboxRepository = new OutboxRepository(this);
 
         groupNameView = findViewById(R.id.text_group_name);
         statsMembersView = findViewById(R.id.text_stats_members);
@@ -54,6 +73,8 @@ public class MainActivity extends Activity {
         statsMutedView = findViewById(R.id.text_stats_muted);
         statsMessagesTodayView = findViewById(R.id.text_stats_messages_today);
         statsMessagesTotalView = findViewById(R.id.text_stats_messages_total);
+        queueCountView = findViewById(R.id.text_queue_count);
+        nextBurstView = findViewById(R.id.text_next_burst);
         recentActivityContainer = findViewById(R.id.container_recent_activity);
 
         findViewById(R.id.button_edit_group_name).setOnClickListener(v -> showRenameDialog());
@@ -63,6 +84,8 @@ public class MainActivity extends Activity {
                 startActivity(new Intent(this, MembershipActivity.class)));
         findViewById(R.id.button_rate_limit).setOnClickListener(v ->
                 startActivity(new Intent(this, RateLimitActivity.class)));
+        findViewById(R.id.button_send_group_message).setOnClickListener(v ->
+                startActivity(new Intent(this, SendGroupMessageActivity.class)));
     }
 
     @Override
@@ -72,6 +95,13 @@ public class MainActivity extends Activity {
             return;
         }
         refresh();
+        queueStatusHandler.post(queueStatusTick);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        queueStatusHandler.removeCallbacks(queueStatusTick);
     }
 
     private void refresh() {
@@ -96,7 +126,32 @@ public class MainActivity extends Activity {
         statsMessagesTodayView.setText(getString(R.string.stats_messages_today, messageRepository.countSince(startOfDay)));
         statsMessagesTotalView.setText(getString(R.string.stats_messages_total, messageRepository.countAll()));
 
+        refreshQueueStatus();
         renderRecentActivity();
+    }
+
+    private void refreshQueueStatus() {
+        queueCountView.setText(getString(R.string.stats_queue_count, outboxRepository.countUnsent()));
+
+        long nextBurstAt = SendQueueStatus.getNextBurstAtMillis();
+        if (nextBurstAt > 0) {
+            long remainingMs = Math.max(0, nextBurstAt - System.currentTimeMillis());
+            nextBurstView.setText(getString(R.string.stats_next_burst,
+                    formatDuration(remainingMs), SendQueueStatus.getNextBurstSize()));
+            nextBurstView.setVisibility(View.VISIBLE);
+        } else {
+            nextBurstView.setVisibility(View.GONE);
+        }
+    }
+
+    private String formatDuration(long millis) {
+        long totalSeconds = millis / 1000;
+        long minutes = totalSeconds / 60;
+        long seconds = totalSeconds % 60;
+        if (minutes > 0) {
+            return minutes + "m " + seconds + "s";
+        }
+        return seconds + "s";
     }
 
     private void renderRecentActivity() {

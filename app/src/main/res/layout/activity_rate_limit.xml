@@ -25,13 +25,45 @@
             android:textStyle="bold"
             android:layout_marginBottom="8dp" />
 
-        <EditText
-            android:id="@+id/edit_burst_size"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/hint_burst_size"
+            android:text="@string/label_burst_min"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="#666666" />
+
+        <EditText
+            android:id="@+id/edit_burst_min"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_burst_min"
             android:inputType="number"
             android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/label_burst_max"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="#666666" />
+
+        <EditText
+            android:id="@+id/edit_burst_max"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_burst_max"
+            android:inputType="number"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/label_min_wait"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="#666666" />
 
         <EditText
             android:id="@+id/edit_min_wait"
@@ -41,12 +73,29 @@
             android:inputType="number"
             android:layout_marginBottom="8dp" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/label_max_wait"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="#666666" />
+
         <EditText
             android:id="@+id/edit_max_wait"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hint_max_wait"
             android:inputType="number"
+            android:layout_marginBottom="8dp" />
+
+        <CheckBox
+            android:id="@+id/checkbox_initial_delay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/checkbox_initial_delay"
+            android:clickable="true"
+            android:focusable="true"
             android:layout_marginBottom="16dp" />
 
         <Button
@@ -80,6 +129,14 @@
             android:visibility="gone"
             android:layout_marginBottom="8dp" />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/label_system_max_count"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="#666666" />
+
         <EditText
             android:id="@+id/edit_system_max_count"
             android:layout_width="match_parent"
@@ -87,6 +144,14 @@
             android:hint="@string/hint_system_max_count"
             android:inputType="number"
             android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/label_system_interval_minutes"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="#666666" />
 
         <EditText
             android:id="@+id/edit_system_interval"

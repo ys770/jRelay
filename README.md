@@ -30,9 +30,11 @@ You must tap **I Agree** to proceed — tapping **Decline** closes the app, and 
 
 - Group name, with an **Edit** button to rename the group.
 - Live stats: member count, admin count, muted count, messages sent today, and messages sent all-time.
+- **Messages in Queue** — how many outbox messages are waiting to go out or mid-send right now.
+- **Next burst in Xs (N messages)** — a live countdown (updates every second) to when the send service will fire its next burst, and how many messages that burst will contain. Hidden when nothing is scheduled (queue empty, or a burst is actively sending).
 - A scrollable feed of the most recent activity across the whole group.
 - **Add Member** shortcut.
-- Buttons to open the **Membership** and **Rate Limiting** screens.
+- Buttons to open the **Membership** and **Rate Limiting** screens, and to open **Send to Group**.
 
 ### Membership
 
@@ -70,7 +72,11 @@ A simple form (phone number + nickname) for adding a member from within the app.
 
 Two independent controls:
 
-- **jRelay Send Pacing** — how many messages are sent per burst, and the minimum/maximum number of seconds jRelay waits (a random value in that range) before sending the next burst. This is jRelay's own throttle, always in effect, and needs no special permission.
+- **jRelay Send Pacing**:
+  - **Minimum/maximum messages per burst** — each burst's size is chosen at random from this range, rather than being fixed.
+  - **Minimum/maximum wait between bursts (seconds)** — jRelay waits a random duration in this range before sending the next burst.
+  - **Wait before sending the first burst** (checkbox, checked by default) — when checked, jRelay waits a random duration (drawn from the same wait range above) before sending the very first burst of a new send cycle, instead of relaying the moment a message comes in. Uncheck it to relay immediately.
+  - This is jRelay's own throttle, always in effect, and needs no special permission. Every field has a small label above it so its purpose stays visible even once you've typed a value.
 - **Android Outgoing SMS Limit** — Android itself has a built-in threshold (`sms_outgoing_check_max_count` / `sms_outgoing_check_interval_ms`) that warns/blocks an app sending too many texts too fast. jRelay can read and display the device's current values always. Editing them requires the `WRITE_SECURE_SETTINGS` permission, which apps cannot be granted through a normal permission prompt — if it's missing, the screen shows the current values (read-only) plus the exact command to run:
 
   ```
@@ -78,6 +84,10 @@ Two independent controls:
   ```
 
   Run that from a computer with the device connected over ADB, then reopen the screen to edit the system values.
+
+### Send to Group
+
+A dedicated screen (opened from the dashboard's **Send to Group** button) for sending a one-off admin message to every active member at once — regardless of anyone's mute state — formatted the same way as a direct message (`[Admin]: ...`). Useful for group-wide announcements that shouldn't wait on someone muting/unmuting.
 
 ## Commands (sent by text from any member)
 

@@ -18,6 +18,9 @@
     <string name="stats_muted">Muted: %1$d</string>
     <string name="stats_messages_today">Messages Today: %1$d</string>
     <string name="stats_messages_total">Messages Total: %1$d</string>
+    <string name="stats_queue_count">Messages in Queue: %1$d</string>
+    <string name="stats_next_burst">Next burst in %1$s (%2$d messages)</string>
+    <string name="send_group_message_shortcut">Send to Group</string>
     <string name="recent_activity">Recent Activity</string>
     <string name="no_activity_yet">No activity yet.</string>
 
@@ -64,15 +67,28 @@
     <!-- Rate limiting -->
     <string name="rate_limit_title">Rate Limiting</string>
     <string name="rate_limit_app_section">jRelay Send Pacing</string>
-    <string name="hint_burst_size">Messages per burst</string>
-    <string name="hint_min_wait">Minimum wait between bursts (seconds)</string>
-    <string name="hint_max_wait">Maximum wait between bursts (seconds)</string>
+    <string name="label_burst_min">Minimum messages per burst</string>
+    <string name="label_burst_max">Maximum messages per burst</string>
+    <string name="label_min_wait">Minimum wait between bursts (seconds)</string>
+    <string name="label_max_wait">Maximum wait between bursts (seconds)</string>
+    <string name="hint_burst_min">Min messages per burst</string>
+    <string name="hint_burst_max">Max messages per burst</string>
+    <string name="hint_min_wait">Seconds</string>
+    <string name="hint_max_wait">Seconds</string>
+    <string name="checkbox_initial_delay">Wait before sending the first burst (uses the wait range above)</string>
     <string name="rate_limit_system_section">Android Outgoing SMS Limit</string>
     <string name="rate_limit_system_desc">Android itself warns/blocks an app that sends too many texts too quickly. These are the system-wide thresholds.</string>
-    <string name="hint_system_max_count">Max messages before warning</string>
-    <string name="hint_system_interval_minutes">Interval (minutes)</string>
+    <string name="label_system_max_count">Max messages before warning</string>
+    <string name="label_system_interval_minutes">Interval (minutes)</string>
+    <string name="hint_system_max_count">Count</string>
+    <string name="hint_system_interval_minutes">Minutes</string>
     <string name="rate_limit_permission_missing">jRelay does not have permission to change this system setting. Run this command from a computer with ADB, with the device connected:</string>
     <string name="rate_limit_value_unavailable">Not available on this device</string>
+
+    <!-- Send to Group -->
+    <string name="send_group_message_title">Send to Group</string>
+    <string name="hint_group_message">Message to send to every active member</string>
+    <string name="action_send">Send</string>
 
     <!-- Notifications -->
     <string name="notification_channel_admin">Admin Messages</string>

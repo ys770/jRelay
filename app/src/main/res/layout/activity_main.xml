@@ -57,6 +57,16 @@
         <TextView
             android:id="@+id/text_stats_messages_total"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/text_queue_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/text_next_burst"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp" />
 
@@ -83,6 +93,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/view_rate_limit"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/button_send_group_message"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/send_group_message_shortcut"
             android:clickable="true"
             android:focusable="true"
             android:layout_marginBottom="16dp" />

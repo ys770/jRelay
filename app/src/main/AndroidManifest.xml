@@ -36,6 +36,7 @@
         <activity android:name=".MemberDetailActivity" android:exported="false" />
         <activity android:name=".AddMemberActivity" android:exported="false" />
         <activity android:name=".RateLimitActivity" android:exported="false" />
+        <activity android:name=".SendGroupMessageActivity" android:exported="false" />
 
         <receiver
             android:name=".sms.SmsReceiver"
