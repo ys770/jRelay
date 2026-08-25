@@ -1,3 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">jRelay</string>
+
+    <!-- Consent -->
+    <string name="consent_title">Before You Start</string>
+    <string name="consent_body">jRelay relays group text messages by sending and receiving standard SMS through this device\'s mobile plan. Your carrier\'s standard messaging and data rates may apply to every message sent or received.\n\nYou are solely responsible for complying with all applicable laws, regulations, and carrier policies regarding automated, bulk, or unsolicited messaging (including but not limited to the TCPA and CTIA guidelines). This application is provided \"as is,\" without warranty of any kind, and the developer disclaims all liability for any misuse, message charges, legal violations, or damages arising from its use.\n\nYou must accept these terms to continue.</string>
+    <string name="consent_agree">I Agree</string>
+    <string name="consent_decline">Decline</string>
+
+    <!-- Dashboard -->
+    <string name="edit_group_name">Edit</string>
+    <string name="add_member_shortcut">Add Member</string>
+    <string name="view_membership">Membership</string>
+    <string name="view_rate_limit">Rate Limiting</string>
+    <string name="stats_members">Members: %1$d</string>
+    <string name="stats_admins">Admins: %1$d</string>
+    <string name="stats_muted">Muted: %1$d</string>
+    <string name="stats_messages_today">Messages Today: %1$d</string>
+    <string name="stats_messages_total">Messages Total: %1$d</string>
+    <string name="recent_activity">Recent Activity</string>
+    <string name="no_activity_yet">No activity yet.</string>
+
+    <!-- Membership -->
+    <string name="membership_title">Members</string>
+    <string name="admin_badge">(admin)</string>
+    <string name="muted_badge">(muted)</string>
+    <string name="no_members_yet">No members yet. Tap Add Member to get started.</string>
+
+    <!-- Add Member -->
+    <string name="add_member_title">Add Member</string>
+    <string name="hint_phone_number">Phone number</string>
+    <string name="hint_nickname">Nickname</string>
+    <string name="action_save">Save</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="error_invalid_number">Invalid phone number format.</string>
+    <string name="error_duplicate_number">This number is already a member.</string>
+    <string name="error_empty_nickname">Nickname cannot be empty.</string>
+
+    <!-- Member Detail -->
+    <string name="label_member_since">Member since: %1$s</string>
+    <string name="label_last_activity">Last activity: %1$s</string>
+    <string name="label_messages_sent">Messages sent: %1$d</string>
+    <string name="label_messages_received">Messages received: %1$d</string>
+    <string name="label_activity_level">Activity (last 7 days): %1$s</string>
+    <string name="activity_level_high">Very active</string>
+    <string name="activity_level_medium">Active</string>
+    <string name="activity_level_low">Quiet</string>
+    <string name="activity_level_none">Inactive</string>
+    <string name="action_make_admin">Make Admin</string>
+    <string name="action_revoke_admin">Revoke Admin</string>
+    <string name="action_mute">Mute</string>
+    <string name="action_unmute">Unmute</string>
+    <string name="action_remove">Remove from Group</string>
+    <string name="action_send_dm">Send Direct Message</string>
+    <string name="action_edit_nickname">Edit Nickname</string>
+    <string name="action_edit_number">Edit Phone Number</string>
+    <string name="action_export_contact">Export Contact</string>
+    <string name="action_call">Call</string>
+    <string name="action_text">Text (Default App)</string>
+    <string name="confirm_remove_title">Remove member?</string>
+    <string name="confirm_remove_message">Remove %1$s from the group? They will be notified.</string>
+
+    <!-- Rate limiting -->
+    <string name="rate_limit_title">Rate Limiting</string>
+    <string name="rate_limit_app_section">jRelay Send Pacing</string>
+    <string name="hint_burst_size">Messages per burst</string>
+    <string name="hint_min_wait">Minimum wait between bursts (seconds)</string>
+    <string name="hint_max_wait">Maximum wait between bursts (seconds)</string>
+    <string name="rate_limit_system_section">Android Outgoing SMS Limit</string>
+    <string name="rate_limit_system_desc">Android itself warns/blocks an app that sends too many texts too quickly. These are the system-wide thresholds.</string>
+    <string name="hint_system_max_count">Max messages before warning</string>
+    <string name="hint_system_interval_minutes">Interval (minutes)</string>
+    <string name="rate_limit_permission_missing">jRelay does not have permission to change this system setting. Run this command from a computer with ADB, with the device connected:</string>
+    <string name="rate_limit_value_unavailable">Not available on this device</string>
+
+    <!-- Notifications -->
+    <string name="notification_channel_admin">Admin Messages</string>
+    <string name="notification_admin_title">Admin message</string>
+
+    <!-- Command reply / broadcast templates -->
+    <string name="tpl_added_you">%1$s added you to %2$s Group. Reply #stop at anytime to opt out.</string>
+    <string name="tpl_added_other">%1$s added %2$s to the group.</string>
+    <string name="tpl_removed_you">You have been removed from %1$s Group. You will no longer receive messages from this Group.</string>
+    <string name="tpl_removed_other">%1$s removed %2$s from the group.</string>
+    <string name="tpl_left_other">%1$s left the group.</string>
+    <string name="tpl_muted_confirm">You are now muted. Reply #unmute to resume receiving messages.</string>
+    <string name="tpl_unmuted_confirm">You are now unmuted. You will resume receiving messages.</string>
+    <string name="tpl_unauthorized">Only admins can use this command.</string>
+    <string name="tpl_unknown_command">Unknown command. Reply #commands for a list of commands.</string>
+    <string name="tpl_invalid_number">Invalid phone number format.</string>
+    <string name="tpl_relay_prefix">%1$s: %2$s</string>
+    <string name="tpl_admin_relay_prefix">[Admin-only from %1$s]: %2$s</string>
+    <string name="tpl_dm_prefix">[Admin]: %1$s</string>
+    <string name="tpl_commands_list">Available commands:\n#commands - show this list\n#mute - pause messages\n#unmute - resume messages\n#stop - leave the group\n#list - list members\n#admin &lt;message&gt; - message admins only\n(Admins) #add &lt;number&gt; &lt;nickname&gt; - add a member\n(Admins) #remove &lt;nickname or number&gt; - remove a member</string>
+    <string name="tpl_list_you">(You)</string>
+    <string name="tpl_list_admin">(admin)</string>
+    <string name="default_added_by_admin">An Admin</string>
 </resources>
