@@ -61,6 +61,8 @@ public class CommandProcessor {
             handleStop(sender);
         } else if (lower.equals("#list")) {
             handleList(sender);
+        } else if (lower.startsWith("#name")) {
+            handleNameChange(sender, text);
         } else if (lower.startsWith("#admin")) {
             handleAdminMessage(sender, text);
         } else if (lower.startsWith("#add")) {
@@ -95,6 +97,30 @@ public class CommandProcessor {
             }
         }
         reply(requester, sb.toString());
+    }
+
+    private void handleNameChange(Member sender, String text) {
+        String newNickname = stripLeadingWord(text).trim();
+        if (newNickname.isEmpty()) {
+            reply(sender, context.getString(R.string.error_empty_nickname));
+            return;
+        }
+        if (newNickname.equals(sender.nickname)) {
+            reply(sender, context.getString(R.string.tpl_name_changed_confirm, newNickname));
+            return;
+        }
+        String oldNickname = sender.nickname;
+        memberRepository.setNickname(sender.id, newNickname);
+        reply(sender, context.getString(R.string.tpl_name_changed_confirm, newNickname));
+        broadcastExcept(sender.id, context.getString(R.string.tpl_name_changed_self_other, oldNickname, newNickname));
+    }
+
+    /** Renames a member from the app UI and notifies the rest of the group. changedByLabel is typically "An Admin". */
+    public void renameMemberFromApp(Member target, String newNickname, String changedByLabel) {
+        String oldNickname = target.nickname;
+        memberRepository.setNickname(target.id, newNickname);
+        broadcastExcept(target.id, context.getString(R.string.tpl_name_changed_admin_other, changedByLabel, oldNickname, newNickname));
+        SmsSendService.start(context);
     }
 
     private void handleAdminMessage(Member sender, String text) {

@@ -173,8 +173,8 @@ public class MemberDetailActivity extends Activity {
                 .setView(dialogView)
                 .setPositiveButton(R.string.action_save, (dialog, which) -> {
                     String nickname = input.getText().toString().trim();
-                    if (!nickname.isEmpty()) {
-                        memberRepository.setNickname(member.id, nickname);
+                    if (!nickname.isEmpty() && !nickname.equals(member.nickname)) {
+                        commandProcessor.renameMemberFromApp(member, nickname, getString(R.string.default_added_by_admin));
                         refresh();
                     }
                 })

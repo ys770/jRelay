@@ -1,5 +1,10 @@
 # Version History
 
+## 1.4 - Nickname Changes
+
+- Added the `#name <new nickname>` command: any member can rename themselves by text. They get a confirmation reply (`"Your name has been changed to <new nickname>."`), and every other active member is notified (`"<old nickname> changed their name to <new nickname>."`).
+- Fixed a gap where changing a member's nickname from the Member Detail screen silently updated the database with no notification at all. It now notifies the rest of the group (`"An Admin has changed <old nickname>'s name to <new nickname>."`), via a new `CommandProcessor.renameMemberFromApp`, matching how app-initiated add/remove already behave.
+
 ## 1.3 - Send Queue Visibility, Burst Randomization, Initial Delay, Group Broadcast
 
 - Dashboard now shows live queue depth ("Messages in Queue") and a live countdown to the next burst ("Next burst in Xs/Xm Ys (N messages)"), updated every second while the screen is visible. Backed by a new in-memory `SendQueueStatus` holder that `SmsSendService` publishes to as it schedules each wait.

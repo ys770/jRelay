@@ -98,6 +98,7 @@ A dedicated screen (opened from the dashboard's **Send to Group** button) for se
 | `#unmute` | anyone | Resumes messages |
 | `#stop` | anyone | Leaves the group |
 | `#list` | anyone | Replies with a newline list of member nicknames only — no phone numbers. Shows `(You)` next to your own entry and `(admin)` next to admins |
+| `#name <new nickname>` | anyone | Changes your own nickname (see below) |
 | `#admin <message>` | anyone | Sends `<message>` to admins only, and pops up a notification on the host device. Non-admins can use this to reach admins directly |
 | `#add <number> <nickname>` | admins only | Adds a new member |
 | `#remove <nickname or number>` | admins only | Removes a member |
@@ -119,6 +120,21 @@ When a member is added (by text or from the app), they receive:
 
 Everyone else in the group receives:
 > `<admin> added <nickname> to the group.`
+
+### Changing your nickname by text
+
+```
+#name Alex Smith
+```
+
+You get a confirmation:
+> `Your name has been changed to <new nickname>.`
+
+Everyone else in the group receives:
+> `<old nickname> changed their name to <new nickname>.`
+
+Changing a member's nickname from the **Member Detail** screen in the app sends the same kind of notice to everyone else, but attributed to "An Admin":
+> `An Admin has changed <old nickname>'s name to <new nickname>.`
 
 ### Removing a member by text
 
