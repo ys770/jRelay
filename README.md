@@ -38,9 +38,16 @@ You must tap **I Agree** to proceed — tapping **Decline** closes the app, and 
 
 ### Membership
 
+- A small **Menu** button at the top left, on the same line as the title, opens a dropdown with **Export to CSV** and **Import from CSV** (see [Import/Export](#importexport-membership-csv) below).
 - A scrollable list of all active members, showing each nickname with an `(admin)` badge and/or a `(muted)` badge where applicable.
 - Tap any member to open their detail screen.
 - **Add Member** shortcut.
+
+#### Import/Export membership CSV
+
+- **Export to CSV** opens the system "save file" picker (no storage permission needed) and writes every active member as `phone,nickname` rows (with a header row), one file you choose the name/location for.
+- **Import from CSV** opens the system file picker, reads whichever CSV you choose, and adds a member for each valid `phone,nickname` row — reusing the exact same "added" flow as `#add`/Add Member, so the new member gets the welcome text and everyone else gets the usual "An Admin added ... " notice. A header row, blank lines, an unparseable phone number, an empty nickname, or a number that's already an active member are all skipped rather than failing the whole import; you get a summary of how many were imported vs. skipped.
+- Since import re-runs the normal add flow per row, bulk-importing many contacts at once queues a lot of outbound SMS (welcome + broadcast per new member) — it's paced by the same rate-limiting settings as everything else, so a big CSV will take a while to fully go out, by design.
 
 ### Member Detail
 
@@ -84,6 +91,10 @@ Two independent controls:
   ```
 
   Run that from a computer with the device connected over ADB, then reopen the screen to edit the system values.
+
+#### Disband Group
+
+A red **Disband Group** button sits at the bottom of the Rate Limiting screen. Tapping it shows a warning that this will **permanently erase every member and all message history, and that nobody will be notified** — then, to confirm, you have to type back a random 4-digit PIN shown right there in the dialog (a fresh one each time). Get the PIN wrong (or cancel) and nothing happens. Get it right and jRelay wipes its entire database (members, message log, and any still-queued outbound messages) and returns to the dashboard. There's no undo, and nothing is sent to anyone as part of it.
 
 ### Send to Group
 

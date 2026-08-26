@@ -1,5 +1,13 @@
 # Version History
 
+## 1.8 - Disband Group, Membership CSV Import/Export
+
+- Added a red **Disband Group** button at the bottom of the Rate Limiting screen. Confirming requires typing back a random 4-digit PIN shown in the warning dialog (freshly generated each time); a wrong PIN or Cancel does nothing. On correct confirmation, `DbHelper.wipeAllData()` permanently deletes all members, message history, and any queued outbound messages, with no notification sent to anyone, and returns to the dashboard.
+- Added a **Menu** button at the top-left of the Membership screen (same line as the title) opening a dropdown with **Export to CSV** and **Import from CSV**:
+  - Export writes every active member as `phone,nickname` rows via the system "save file" picker (`ACTION_CREATE_DOCUMENT`) — no storage permission needed.
+  - Import reads a chosen CSV via the system file picker (`ACTION_OPEN_DOCUMENT`) and adds a member per valid row through the existing `CommandProcessor.addMember` flow (same welcome/broadcast messages as `#add`), skipping header rows, blanks, invalid numbers, empty nicknames, and existing active members, then reports an imported/skipped summary.
+  - Added `util/CsvUtil` (minimal RFC 4180-style field escaping/parsing) with unit tests (`CsvUtilTest`).
+
 ## 1.7 - Flexible #add Argument Order
 
 - Fixed `#add` rejecting the number with `"Invalid phone number format."` when the nickname came first (e.g. `#add User 234-567-8910`) — only `#add <number> <nickname>` was accepted. Added `PhoneNumberUtils.splitTrailingNumberAndRest`, tried as a fallback whenever the leading-number parse fails, so `#add <nickname> <number>` now works too. Covered by new tests in `PhoneNumberUtilsTest`.

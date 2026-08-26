@@ -1,15 +1,22 @@
 package com.sh7411usa.jrelay;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.sh7411usa.jrelay.db.DbHelper;
 import com.sh7411usa.jrelay.util.Prefs;
 import com.sh7411usa.jrelay.util.RateLimitSettings;
+
+import java.util.Random;
 
 public class RateLimitActivity extends Activity {
 
@@ -48,6 +55,7 @@ public class RateLimitActivity extends Activity {
 
         findViewById(R.id.button_save).setOnClickListener(v -> saveAppSettings());
         systemSaveButton.setOnClickListener(v -> saveSystemSettings());
+        findViewById(R.id.button_disband_group).setOnClickListener(v -> confirmDisbandGroup());
     }
 
     @Override
@@ -105,5 +113,38 @@ public class RateLimitActivity extends Activity {
         } catch (NumberFormatException e) {
             return defaultValue;
         }
+    }
+
+    private void confirmDisbandGroup() {
+        int pin = 1000 + new Random().nextInt(9000);
+
+        View dialogView = LayoutInflater.from(this).inflate(R.layout.dialog_disband_confirm, null);
+        TextView pinView = dialogView.findViewById(R.id.text_disband_pin);
+        EditText pinInput = dialogView.findViewById(R.id.edit_disband_pin);
+        pinView.setText(String.valueOf(pin));
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.disband_group_title)
+                .setMessage(R.string.disband_group_warning)
+                .setView(dialogView)
+                .setPositiveButton(R.string.action_disband_group, (dialog, which) -> {
+                    if (pinInput.getText().toString().trim().equals(String.valueOf(pin))) {
+                        disbandGroup();
+                    } else {
+                        Toast.makeText(this, R.string.disband_pin_mismatch, Toast.LENGTH_LONG).show();
+                    }
+                })
+                .setNegativeButton(R.string.action_cancel, null)
+                .show();
+    }
+
+    private void disbandGroup() {
+        DbHelper.getInstance(this).wipeAllData();
+        Toast.makeText(this, R.string.disband_group_done, Toast.LENGTH_LONG).show();
+
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 }

@@ -169,5 +169,16 @@
             android:clickable="true"
             android:focusable="true" />
 
+        <Button
+            android:id="@+id/button_disband_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/action_disband_group"
+            android:backgroundTint="@color/disband_red"
+            android:textColor="@color/white"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginTop="32dp" />
+
     </LinearLayout>
 </ScrollView>

@@ -66,4 +66,12 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEMBERS);
         onCreate(db);
     }
+
+    /** Permanently erases every member, message, and queued outbound message. Used only by "Disband Group". */
+    public void wipeAllData() {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete(TABLE_OUTBOX, null, null);
+        db.delete(TABLE_MESSAGE_LOG, null, null);
+        db.delete(TABLE_MEMBERS, null, null);
+    }
 }

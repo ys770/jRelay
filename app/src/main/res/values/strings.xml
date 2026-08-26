@@ -29,6 +29,13 @@
     <string name="admin_badge">(admin)</string>
     <string name="muted_badge">(muted)</string>
     <string name="no_members_yet">No members yet. Tap Add Member to get started.</string>
+    <string name="menu_button_label">Menu</string>
+    <string name="menu_export_csv">Export to CSV</string>
+    <string name="menu_import_csv">Import from CSV</string>
+    <string name="export_success">Exported %1$d member(s).</string>
+    <string name="export_failed">Export failed.</string>
+    <string name="import_summary">Imported %1$d member(s). Skipped %2$d.</string>
+    <string name="import_failed">Import failed.</string>
 
     <!-- Add Member -->
     <string name="add_member_title">Add Member</string>
@@ -84,6 +91,14 @@
     <string name="hint_system_interval_minutes">Minutes</string>
     <string name="rate_limit_permission_missing">jRelay does not have permission to change this system setting. Run this command from a computer with ADB, with the device connected:</string>
     <string name="rate_limit_value_unavailable">Not available on this device</string>
+
+    <!-- Disband Group -->
+    <string name="action_disband_group">Disband Group</string>
+    <string name="disband_group_title">Disband Group?</string>
+    <string name="disband_group_warning">This will permanently erase all members and all message history. Nobody will be notified. This cannot be undone.\n\nTo confirm, enter the PIN shown below.</string>
+    <string name="hint_disband_pin">Enter PIN</string>
+    <string name="disband_pin_mismatch">PIN did not match. The group was not disbanded.</string>
+    <string name="disband_group_done">The group has been disbanded.</string>
 
     <!-- Send to Group -->
     <string name="send_group_message_title">Send to Group</string>
