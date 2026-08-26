@@ -4,8 +4,14 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.TextWatcher;
+import android.text.style.BackgroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -16,6 +22,7 @@ import com.sh7411usa.jrelay.model.Member;
 import com.sh7411usa.jrelay.sms.CommandProcessor;
 import com.sh7411usa.jrelay.sms.PhoneNumberUtils;
 import com.sh7411usa.jrelay.util.CsvUtil;
+import com.sh7411usa.jrelay.util.UiUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,7 +31,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class MembershipActivity extends Activity {
 
@@ -34,6 +43,8 @@ public class MembershipActivity extends Activity {
     private MemberRepository memberRepository;
     private CommandProcessor commandProcessor;
     private LinearLayout container;
+    private EditText searchInput;
+    private String currentQuery = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +53,27 @@ public class MembershipActivity extends Activity {
         memberRepository = new MemberRepository(this);
         commandProcessor = new CommandProcessor(this);
         container = findViewById(R.id.container_members);
+        searchInput = findViewById(R.id.edit_search);
+
         findViewById(R.id.button_add_member).setOnClickListener(v ->
                 startActivity(new Intent(this, AddMemberActivity.class)));
         findViewById(R.id.button_membership_options).setOnClickListener(this::showOptionsMenu);
+
+        searchInput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                currentQuery = s.toString();
+                renderMembers();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
     }
 
     @Override
@@ -161,18 +190,37 @@ public class MembershipActivity extends Activity {
 
     private void renderMembers() {
         container.removeAllViews();
-        List<Member> members = memberRepository.getActiveMembers();
-        if (members.isEmpty()) {
+        List<Member> allMembers = memberRepository.getActiveMembers();
+
+        String query = currentQuery.trim();
+        String queryLower = query.toLowerCase(Locale.US);
+        String queryDigits = digitsOnly(query);
+        boolean adminMode = queryLower.contains("admin");
+
+        List<Member> filtered = new ArrayList<>();
+        for (Member m : allMembers) {
+            if (query.isEmpty() || matchesQuery(m, queryLower, queryDigits, adminMode)) {
+                filtered.add(m);
+            }
+        }
+
+        if (filtered.isEmpty()) {
             TextView empty = new TextView(this);
-            empty.setText(R.string.no_members_yet);
+            empty.setText(allMembers.isEmpty() ? R.string.no_members_yet : R.string.no_search_results);
             container.addView(empty);
             return;
         }
+
         LayoutInflater inflater = LayoutInflater.from(this);
-        for (Member member : members) {
+        for (int i = 0; i < filtered.size(); i++) {
+            Member member = filtered.get(i);
             View row = inflater.inflate(R.layout.row_member, container, false);
             TextView nicknameView = row.findViewById(R.id.text_member_nickname);
+            TextView phoneView = row.findViewById(R.id.text_member_phone);
             TextView badgeView = row.findViewById(R.id.text_member_badge);
+
+            setHighlightedText(nicknameView, member.nickname, queryLower);
+            setHighlightedPhone(phoneView, member.phoneE164, queryDigits);
 
             StringBuilder badge = new StringBuilder();
             if (member.isAdmin) {
@@ -184,8 +232,11 @@ public class MembershipActivity extends Activity {
                 }
                 badge.append(getString(R.string.muted_badge));
             }
-            nicknameView.setText(member.nickname);
-            badgeView.setText(badge.toString());
+            if (adminMode && member.isAdmin) {
+                setHighlightedText(badgeView, badge.toString(), "admin");
+            } else {
+                badgeView.setText(badge.toString());
+            }
 
             long memberId = member.id;
             row.setOnClickListener(v -> {
@@ -194,6 +245,69 @@ public class MembershipActivity extends Activity {
                 startActivity(intent);
             });
             container.addView(row);
+
+            if (i < filtered.size() - 1) {
+                container.addView(UiUtil.createDivider(this, R.color.divider));
+            }
         }
+    }
+
+    private boolean matchesQuery(Member member, String queryLower, String queryDigits, boolean adminMode) {
+        if (adminMode && member.isAdmin) {
+            return true;
+        }
+        if (!queryLower.isEmpty() && member.nickname.toLowerCase(Locale.US).contains(queryLower)) {
+            return true;
+        }
+        if (!queryDigits.isEmpty() && digitsOnly(member.phoneE164).contains(queryDigits)) {
+            return true;
+        }
+        return false;
+    }
+
+    private String digitsOnly(String text) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            if (Character.isDigit(c)) {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
+
+    private void setHighlightedText(TextView view, String text, String queryLower) {
+        if (queryLower == null || queryLower.isEmpty()) {
+            view.setText(text);
+            return;
+        }
+        int start = text.toLowerCase(Locale.US).indexOf(queryLower);
+        if (start < 0) {
+            view.setText(text);
+            return;
+        }
+        SpannableString spannable = new SpannableString(text);
+        spannable.setSpan(new BackgroundColorSpan(getColor(R.color.search_highlight)),
+                start, start + queryLower.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        view.setText(spannable);
+    }
+
+    /** phoneE164 is always "+" followed only by digits, so a digit-index match maps to char-index + 1. */
+    private void setHighlightedPhone(TextView view, String phoneE164, String queryDigits) {
+        if (queryDigits == null || queryDigits.isEmpty()) {
+            view.setText(phoneE164);
+            return;
+        }
+        int digitStart = digitsOnly(phoneE164).indexOf(queryDigits);
+        if (digitStart < 0) {
+            view.setText(phoneE164);
+            return;
+        }
+        int charStart = digitStart + 1;
+        int charEnd = charStart + queryDigits.length();
+        SpannableString spannable = new SpannableString(phoneE164);
+        spannable.setSpan(new BackgroundColorSpan(getColor(R.color.search_highlight)),
+                charStart, charEnd, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        view.setText(spannable);
     }
 }

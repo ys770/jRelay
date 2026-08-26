@@ -170,6 +170,14 @@
             android:focusable="true" />
 
         <Button
+            android:id="@+id/button_clear_history"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginTop="32dp" />
+
+        <Button
             android:id="@+id/button_disband_group"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -178,7 +186,7 @@
             android:textColor="@color/white"
             android:clickable="true"
             android:focusable="true"
-            android:layout_marginTop="32dp" />
+            android:layout_marginTop="12dp" />
 
     </LinearLayout>
 </ScrollView>

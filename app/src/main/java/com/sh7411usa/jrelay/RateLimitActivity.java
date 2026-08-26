@@ -13,14 +13,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.sh7411usa.jrelay.db.DbHelper;
+import com.sh7411usa.jrelay.db.MessageRepository;
 import com.sh7411usa.jrelay.util.Prefs;
 import com.sh7411usa.jrelay.util.RateLimitSettings;
 
+import java.util.Locale;
 import java.util.Random;
 
 public class RateLimitActivity extends Activity {
 
     private Prefs prefs;
+    private MessageRepository messageRepository;
     private EditText burstMinInput;
     private EditText burstMaxInput;
     private EditText minWaitInput;
@@ -30,12 +33,14 @@ public class RateLimitActivity extends Activity {
     private EditText systemIntervalInput;
     private TextView systemPermissionNotice;
     private Button systemSaveButton;
+    private Button clearHistoryButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rate_limit);
         prefs = new Prefs(this);
+        messageRepository = new MessageRepository(this);
 
         burstMinInput = findViewById(R.id.edit_burst_min);
         burstMaxInput = findViewById(R.id.edit_burst_max);
@@ -46,6 +51,7 @@ public class RateLimitActivity extends Activity {
         systemIntervalInput = findViewById(R.id.edit_system_interval);
         systemPermissionNotice = findViewById(R.id.text_system_permission_notice);
         systemSaveButton = findViewById(R.id.button_system_save);
+        clearHistoryButton = findViewById(R.id.button_clear_history);
 
         burstMinInput.setText(String.valueOf(prefs.getBurstMin()));
         burstMaxInput.setText(String.valueOf(prefs.getBurstMax()));
@@ -55,6 +61,7 @@ public class RateLimitActivity extends Activity {
 
         findViewById(R.id.button_save).setOnClickListener(v -> saveAppSettings());
         systemSaveButton.setOnClickListener(v -> saveSystemSettings());
+        clearHistoryButton.setOnClickListener(v -> confirmClearHistory());
         findViewById(R.id.button_disband_group).setOnClickListener(v -> confirmDisbandGroup());
     }
 
@@ -62,6 +69,7 @@ public class RateLimitActivity extends Activity {
     protected void onResume() {
         super.onResume();
         loadSystemSettings();
+        updateClearHistoryButtonLabel();
     }
 
     private void saveAppSettings() {
@@ -113,6 +121,35 @@ public class RateLimitActivity extends Activity {
         } catch (NumberFormatException e) {
             return defaultValue;
         }
+    }
+
+    private void updateClearHistoryButtonLabel() {
+        String size = formatSize(messageRepository.estimateStorageBytes());
+        clearHistoryButton.setText(getString(R.string.action_clear_history, size));
+    }
+
+    private String formatSize(long bytes) {
+        if (bytes < 1024) {
+            return "~" + bytes + " B";
+        } else if (bytes < 1024 * 1024) {
+            return "~" + (bytes / 1024) + " KB";
+        }
+        return String.format(Locale.US, "~%.1f MB", bytes / (1024.0 * 1024.0));
+    }
+
+    private void confirmClearHistory() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.clear_history_title)
+                .setMessage(R.string.clear_history_warning)
+                .setPositiveButton(R.string.action_continue, (dialog, which) -> clearHistory())
+                .setNegativeButton(R.string.action_cancel, null)
+                .show();
+    }
+
+    private void clearHistory() {
+        messageRepository.deleteAll();
+        Toast.makeText(this, R.string.clear_history_done, Toast.LENGTH_LONG).show();
+        updateClearHistoryButtonLabel();
     }
 
     private void confirmDisbandGroup() {

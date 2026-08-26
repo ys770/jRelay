@@ -32,14 +32,15 @@ You must tap **I Agree** to proceed — tapping **Decline** closes the app, and 
 - Live stats: member count, admin count, muted count, messages sent today, and messages sent all-time.
 - **Messages in Queue** — how many outbox messages are waiting to go out or mid-send right now.
 - **Next burst in Xs (N messages)** — a live countdown (updates every second) to when the send service will fire its next burst, and how many messages that burst will contain. Hidden when nothing is scheduled (queue empty, or a burst is actively sending).
-- A scrollable feed of the most recent activity across the whole group.
+- A scrollable feed of the most recent activity across the whole group, with a thin separator between each entry. Tapping an entry opens that member's detail screen.
 - **Add Member** shortcut.
 - Buttons to open the **Membership** and **Rate Limiting** screens, and to open **Send to Group**.
 
 ### Membership
 
 - A small **Menu** button at the top left, on the same line as the title, opens a dropdown with **Export to CSV** and **Import from CSV** (see [Import/Export](#importexport-membership-csv) below).
-- A scrollable list of all active members, showing each nickname with an `(admin)` badge and/or a `(muted)` badge where applicable.
+- An instant search bar filters the list as you type — by nickname, by phone number in *any* format (it compares digits only, so `234-567-8910`, `(234) 567-8910`, and `2345678910` all match the same member), or by typing "admin" to show only admins. The matching text is highlighted in each result.
+- Each row shows the nickname with the phone number in small print underneath, plus an `(admin)` badge and/or a `(muted)` badge where applicable, with a thin separator between rows.
 - Tap any member to open their detail screen.
 - **Add Member** shortcut.
 
@@ -91,6 +92,10 @@ Two independent controls:
   ```
 
   Run that from a computer with the device connected over ADB, then reopen the screen to edit the system values.
+
+#### Clear History
+
+A **Clear History** button sits above Disband Group, labeled with a rough estimate of how much history there is to clear (e.g. `Clear History (~12 KB)`). Tapping it shows a Continue/Cancel confirmation explaining that this only erases the message history behind the dashboard/member activity feeds and stats — **members, admins, mute state, and settings are all left alone**, and nobody is notified. There's no undo.
 
 #### Disband Group
 

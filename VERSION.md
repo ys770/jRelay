@@ -1,5 +1,14 @@
 # Version History
 
+## 1.9 - Membership Search, Clear History, Dashboard Polish
+
+- Added an instant search bar to the Membership screen: filters live as you type by nickname (substring, case-insensitive), by phone number in any format (digit-only comparison, so formatting doesn't matter), or by typing "admin" to show only admins. Matching text is highlighted (`SpannableString` + `BackgroundColorSpan`) in both the nickname and the phone number.
+- Each member row now shows the phone number in small text underneath the nickname (`row_member.xml` restructured into a nickname+phone column beside the admin/muted badge).
+- Added thin 1dp separators between rows in both the Membership list and the dashboard's Recent Activity feed (`util/UiUtil.createDivider`).
+- Tapping a Recent Activity entry on the dashboard now opens that member's detail screen.
+- Added a small "Group Name" caption underneath the group name on the dashboard.
+- Added a **Clear History** button above Disband Group on the Rate Limiting screen: a Continue/Cancel confirmation that erases only the message history (`MessageRepository.deleteAll`) — members, admins, mute state, and settings are untouched, and nobody is notified. The button label shows a rough size estimate in parentheses (`MessageRepository.estimateStorageBytes`).
+
 ## 1.8 - Disband Group, Membership CSV Import/Export
 
 - Added a red **Disband Group** button at the bottom of the Rate Limiting screen. Confirming requires typing back a random 4-digit PIN shown in the warning dialog (freshly generated each time); a wrong PIN or Cancel does nothing. On correct confirmation, `DbHelper.wipeAllData()` permanently deletes all members, message history, and any queued outbound messages, with no notification sent to anyone, and returns to the dashboard.

@@ -21,6 +21,7 @@ import com.sh7411usa.jrelay.model.MessageRecord;
 import com.sh7411usa.jrelay.sms.CommandProcessor;
 import com.sh7411usa.jrelay.sms.SendQueueStatus;
 import com.sh7411usa.jrelay.util.Prefs;
+import com.sh7411usa.jrelay.util.UiUtil;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -166,7 +167,8 @@ public class MainActivity extends Activity {
             return;
         }
         LayoutInflater inflater = LayoutInflater.from(this);
-        for (MessageRecord record : recent) {
+        for (int i = 0; i < recent.size(); i++) {
+            MessageRecord record = recent.get(i);
             View row = inflater.inflate(R.layout.row_message, recentActivityContainer, false);
             TextView bodyView = row.findViewById(R.id.text_message_body);
             TextView metaView = row.findViewById(R.id.text_message_meta);
@@ -179,7 +181,23 @@ public class MainActivity extends Activity {
                 }
             }
             metaView.setText(memberLabel + DateFormat.format("MMM d, h:mm a", record.timestamp));
+
+            if (record.memberId != null) {
+                long memberId = record.memberId;
+                row.setClickable(true);
+                row.setFocusable(true);
+                row.setBackgroundResource(R.drawable.focus_highlight);
+                row.setOnClickListener(v -> {
+                    Intent intent = new Intent(MainActivity.this, MemberDetailActivity.class);
+                    intent.putExtra(MemberDetailActivity.EXTRA_MEMBER_ID, memberId);
+                    startActivity(intent);
+                });
+            }
+
             recentActivityContainer.addView(row);
+            if (i < recent.size() - 1) {
+                recentActivityContainer.addView(UiUtil.createDivider(this, R.color.divider));
+            }
         }
     }
 

@@ -4,4 +4,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="focus_highlight">#553399FF</color>
     <color name="disband_red">#B00020</color>
+    <color name="search_highlight">#FFF59D</color>
+    <color name="divider">#CCCCCC</color>
 </resources>

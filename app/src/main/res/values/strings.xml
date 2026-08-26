@@ -9,6 +9,7 @@
     <string name="consent_decline">Decline</string>
 
     <!-- Dashboard -->
+    <string name="group_name_label">Group Name</string>
     <string name="edit_group_name">Edit</string>
     <string name="add_member_shortcut">Add Member</string>
     <string name="view_membership">Membership</string>
@@ -36,6 +37,8 @@
     <string name="export_failed">Export failed.</string>
     <string name="import_summary">Imported %1$d member(s). Skipped %2$d.</string>
     <string name="import_failed">Import failed.</string>
+    <string name="hint_membership_search">Search by name, phone, or \"admin\"</string>
+    <string name="no_search_results">No members match your search.</string>
 
     <!-- Add Member -->
     <string name="add_member_title">Add Member</string>
@@ -91,6 +94,13 @@
     <string name="hint_system_interval_minutes">Minutes</string>
     <string name="rate_limit_permission_missing">jRelay does not have permission to change this system setting. Run this command from a computer with ADB, with the device connected:</string>
     <string name="rate_limit_value_unavailable">Not available on this device</string>
+
+    <!-- Clear History -->
+    <string name="action_clear_history">Clear History (%1$s)</string>
+    <string name="clear_history_title">Clear History?</string>
+    <string name="clear_history_warning">This will permanently erase the message history behind the dashboard and member activity feeds and stats. Members and settings are not affected, and nobody will be notified. This cannot be undone.</string>
+    <string name="clear_history_done">History cleared.</string>
+    <string name="action_continue">Continue</string>
 
     <!-- Disband Group -->
     <string name="action_disband_group">Disband Group</string>

@@ -114,6 +114,26 @@ public class MessageRepository {
         return count;
     }
 
+    /** Permanently erases message history only (members/outbox untouched). Used by "Clear History". */
+    public void deleteAll() {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.delete(DbHelper.TABLE_MESSAGE_LOG, null, null);
+    }
+
+    /** Rough on-disk size estimate for the message log, for the "Clear History" button label. */
+    public long estimateStorageBytes() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT COUNT(*), COALESCE(SUM(LENGTH(body)), 0) FROM " + DbHelper.TABLE_MESSAGE_LOG, null);
+        long bytes = 0;
+        if (c.moveToFirst()) {
+            long rowCount = c.getLong(0);
+            long bodyBytes = c.getLong(1);
+            bytes = bodyBytes + rowCount * 40L;
+        }
+        c.close();
+        return bytes;
+    }
+
     private MessageRecord fromCursor(Cursor c) {
         MessageRecord r = new MessageRecord();
         r.id = c.getLong(c.getColumnIndexOrThrow("id"));
