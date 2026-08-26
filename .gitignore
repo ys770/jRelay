@@ -13,3 +13,7 @@
 .externalNativeBuild
 .cxx
 local.properties
+CLAUDE.md
+CLAUDE.local.md
+.claude/
+Initial Prompt.txt
