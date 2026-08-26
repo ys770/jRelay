@@ -188,5 +188,14 @@
             android:focusable="true"
             android:layout_marginTop="12dp" />
 
+        <Button
+            android:id="@+id/button_view_license"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/action_view_license"
+            android:clickable="true"
+            android:focusable="true"
+            android:layout_marginTop="32dp" />
+
     </LinearLayout>
 </ScrollView>

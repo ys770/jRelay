@@ -22,7 +22,7 @@ On first launch, jRelay shows a disclosure screen covering:
 - You are responsible for legal and carrier-policy compliance for automated messaging.
 - The app is provided as-is with no warranty.
 
-You must tap **I Agree** to proceed — tapping **Decline** closes the app, and the same screen reappears next launch until it's accepted. Agreeing triggers the runtime permission prompts for SMS send/receive (and notifications, on Android 13+).
+Below that is a checkbox, "You have read and accept the terms of the license," with a **License** link next to it that opens the full license text in-app (see [License](#license) below). **I Agree** stays disabled until that checkbox is checked. Tapping **Decline** closes the app, and the same screen reappears next launch until both the checkbox is checked and I Agree is tapped. Agreeing triggers the runtime permission prompts for SMS send/receive (and notifications, on Android 13+).
 
 ## Screens
 
@@ -100,6 +100,10 @@ A **Clear History** button sits above Disband Group, labeled with a rough estima
 #### Disband Group
 
 A red **Disband Group** button sits at the bottom of the Rate Limiting screen. Tapping it shows a warning that this will **permanently erase every member and all message history, and that nobody will be notified** — then, to confirm, you have to type back a random 4-digit PIN shown right there in the dialog (a fresh one each time). Get the PIN wrong (or cancel) and nothing happens. Get it right and jRelay wipes its entire database (members, message log, and any still-queued outbound messages), resets the group name back to the default "jRelay", and returns to the dashboard. There's no undo, and nothing is sent to anyone as part of it.
+
+#### License
+
+A **License** button at the very bottom of the Rate Limiting screen opens the same in-app license viewer as the link on the first-run screen (see [License](#license) below).
 
 ### Send to Group
 
@@ -206,6 +210,12 @@ jRelay does not need to be set as your default SMS app, and does not request con
 ## Data storage
 
 Everything is stored locally in a SQLite database on the device — there is no server or cloud component. Three tables back the app: members, a full message log (used for dashboard/member stats), and an outbox queue that `SmsSendService` drains according to your rate-limiting settings.
+
+## License
+
+jRelay is source-available under the **jRelay Noncommercial License 1.0** — see `LICENSE.md` at the repository root for the authoritative text. In short: free to use, modify, and share for noncommercial purposes; commercial use requires a separate written license from the copyright holder.
+
+The same text is bundled in the app itself (`app/src/main/assets/license.html`) and shown in a `WebView` by `LicenseActivity`, reachable from a **License** link on the first-run screen and a **License** button at the bottom of the Rate Limiting screen — no network access needed, since it's loaded from the local asset.
 
 ## Building
 

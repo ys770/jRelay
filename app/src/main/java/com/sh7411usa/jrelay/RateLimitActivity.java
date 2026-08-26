@@ -63,6 +63,8 @@ public class RateLimitActivity extends Activity {
         systemSaveButton.setOnClickListener(v -> saveSystemSettings());
         clearHistoryButton.setOnClickListener(v -> confirmClearHistory());
         findViewById(R.id.button_disband_group).setOnClickListener(v -> confirmDisbandGroup());
+        findViewById(R.id.button_view_license).setOnClickListener(v ->
+                startActivity(new Intent(this, LicenseActivity.class)));
     }
 
     @Override

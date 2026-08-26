@@ -1,5 +1,12 @@
 # Version History
 
+## 1.12 - In-App License Viewer
+
+- Added `app/src/main/assets/license.html`, an HTML transcription of `LICENSE.md`.
+- Added `LicenseActivity`, a `WebView`-backed screen (`activity_license.xml`, WebView as root since it manages its own scrolling) that loads the bundled license asset via `file:///android_asset/license.html` — no network access or new permissions needed.
+- Added a **License** button at the bottom of the Rate Limiting screen that opens `LicenseActivity`.
+- Added a "You have read and accept the terms of the license." checkbox to the first-run consent screen, with a **License** link next to it that also opens `LicenseActivity`. **I Agree** is now disabled until that checkbox is checked, in addition to the existing disclosure acceptance.
+
 ## 1.11 - Disband Resets Group Name
 
 - Disband Group now also resets the group name back to the default "jRelay" (`Prefs.resetGroupName`), instead of leaving the previous group's name behind after all its members and history are erased.

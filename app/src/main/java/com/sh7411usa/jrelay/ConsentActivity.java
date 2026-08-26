@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.CheckBox;
 
 import com.sh7411usa.jrelay.util.Prefs;
 
@@ -24,9 +25,15 @@ public class ConsentActivity extends Activity {
 
         Button agreeButton = findViewById(R.id.button_agree);
         Button declineButton = findViewById(R.id.button_decline);
+        CheckBox licenseCheckbox = findViewById(R.id.checkbox_license_agree);
+
+        agreeButton.setEnabled(licenseCheckbox.isChecked());
+        licenseCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> agreeButton.setEnabled(isChecked));
 
         agreeButton.setOnClickListener(v -> onAgree());
         declineButton.setOnClickListener(v -> finish());
+        findViewById(R.id.text_view_license_link).setOnClickListener(v ->
+                startActivity(new Intent(this, LicenseActivity.class)));
     }
 
     private void onAgree() {

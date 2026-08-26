@@ -5,6 +5,7 @@
     <!-- Consent -->
     <string name="consent_title">Before You Start</string>
     <string name="consent_body">jRelay relays group text messages by sending and receiving standard SMS through this device\'s mobile plan. Your carrier\'s standard messaging and data rates may apply to every message sent or received.\n\nYou are solely responsible for complying with all applicable laws, regulations, and carrier policies regarding automated, bulk, or unsolicited messaging (including but not limited to the TCPA and CTIA guidelines). This application is provided \"as is,\" without warranty of any kind, and the developer disclaims all liability for any misuse, message charges, legal violations, or damages arising from its use.\n\nYou must accept these terms to continue.</string>
+    <string name="consent_license_agree">You have read and accept the terms of the license.</string>
     <string name="consent_agree">I Agree</string>
     <string name="consent_decline">Decline</string>
 
@@ -76,6 +77,7 @@
 
     <!-- Rate limiting -->
     <string name="rate_limit_title">Rate Limiting</string>
+    <string name="action_view_license">License</string>
     <string name="rate_limit_app_section">jRelay Send Pacing</string>
     <string name="label_burst_min">Minimum messages per burst</string>
     <string name="label_burst_max">Maximum messages per burst</string>
