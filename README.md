@@ -34,7 +34,7 @@ You must tap **I Agree** to proceed — tapping **Decline** closes the app, and 
 - **Next burst in Xs (N messages)** — a live countdown (updates every second) to when the send service will fire its next burst, and how many messages that burst will contain. Hidden when nothing is scheduled (queue empty, or a burst is actively sending).
 - A scrollable feed of the most recent activity across the whole group, with a thin separator between each entry. Tapping an entry opens that member's detail screen.
 - **Add Member** shortcut.
-- Buttons to open the **Membership** and **Rate Limiting** screens, and to open **Send to Group**.
+- Buttons to open the **Membership** screen, the Rate Limiting screen (labeled **Configure**), and **Send to Group**.
 
 ### Membership
 
@@ -113,7 +113,7 @@ A dedicated screen (opened from the dashboard's **Send to Group** button) for se
 | `#mute` | anyone | Pauses messages for you (see below) |
 | `#unmute` | anyone | Resumes messages |
 | `#stop` | anyone | Leaves the group |
-| `#list` | anyone | Replies with a newline list of member nicknames only — no phone numbers. Shows `(You)` next to your own entry and `(admin)` next to admins |
+| `#list` | anyone | Replies with the group name, a blank line, then a newline list of member nicknames only — no phone numbers. Shows `(You)` next to your own entry and `(admin)` next to admins |
 | `#name <new nickname>` | anyone | Changes your own nickname (see below) |
 | `#admin <message>` | anyone | Sends `<message>` to admins only, and pops up a notification on the host device. Non-admins can use this to reach admins directly |
 | `#add <number> <nickname>` | admins only | Adds a new member |

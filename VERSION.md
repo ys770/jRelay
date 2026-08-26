@@ -1,5 +1,10 @@
 # Version History
 
+## 1.10 - #list Header, Dashboard Button Label
+
+- `#list` now replies with the group name, a blank line, then the member list, instead of the bare list.
+- Renamed the dashboard's "Rate Limiting" button label to "Configure".
+
 ## 1.9 - Membership Search, Clear History, Dashboard Polish
 
 - Added an instant search bar to the Membership screen: filters live as you type by nickname (substring, case-insensitive), by phone number in any format (digit-only comparison, so formatting doesn't matter), or by typing "admin" to show only admins. Matching text is highlighted (`SpannableString` + `BackgroundColorSpan`) in both the nickname and the phone number.

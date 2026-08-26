@@ -13,7 +13,7 @@
     <string name="edit_group_name">Edit</string>
     <string name="add_member_shortcut">Add Member</string>
     <string name="view_membership">Membership</string>
-    <string name="view_rate_limit">Rate Limiting</string>
+    <string name="view_rate_limit">Configure</string>
     <string name="stats_members">Members: %1$d</string>
     <string name="stats_admins">Admins: %1$d</string>
     <string name="stats_muted">Muted: %1$d</string>

@@ -94,10 +94,13 @@ public class CommandProcessor {
     private void handleList(Member requester) {
         List<Member> members = memberRepository.getActiveMembers();
         StringBuilder sb = new StringBuilder();
+        sb.append(prefs.getGroupName()).append("\n\n");
+        boolean first = true;
         for (Member m : members) {
-            if (sb.length() > 0) {
+            if (!first) {
                 sb.append("\n");
             }
+            first = false;
             sb.append(m.nickname);
             if (m.id == requester.id) {
                 sb.append(" ").append(context.getString(R.string.tpl_list_you));
