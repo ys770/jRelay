@@ -102,8 +102,9 @@ A dedicated screen (opened from the dashboard's **Send to Group** button) for se
 | `#admin <message>` | anyone | Sends `<message>` to admins only, and pops up a notification on the host device. Non-admins can use this to reach admins directly |
 | `#add <number> <nickname>` | admins only | Adds a new member |
 | `#remove <nickname or number>` | admins only | Removes a member |
+| `#topic <new name>` | admins only | Renames the group (see below) |
 
-Non-admins attempting `#add` or `#remove` get back: `"Only admins can use this command."` An unrecognized `#` command gets: `"Unknown command. Reply #commands for a list of commands."`
+Non-admins attempting `#add`, `#remove`, or `#topic` get back: `"Only admins can use this command."` An unrecognized `#` command gets: `"Unknown command. Reply #commands for a list of commands."` `#commands` itself only lists the admin-only commands to admins — a regular member's reply omits `#add`, `#remove`, and `#topic` entirely.
 
 ### Adding a member by text
 
@@ -150,6 +151,20 @@ Everyone else receives:
 > `<admin> removed <nickname> from the group.`
 
 Removal is a soft delete — the member's history and stats are preserved (visible again if you're troubleshooting), but they're excluded from relaying, `#list`, and the Membership screen. They can be re-added later with `#add`/Add Member using the same number, which reactivates their original record rather than creating a duplicate.
+
+### Renaming the group by text
+
+```
+#topic Weekend Trip
+```
+
+Admin-only. Everyone else in the group receives:
+> `<admin> has changed the group name to <new name>.`
+
+Renaming the group from the dashboard's **Edit** button sends the same notice to every active member (there's no "acting admin" to exclude), attributed to "An Admin":
+> `An Admin has changed the group name to <new name>.`
+
+The dashboard's group name always reflects the current value, live — no need to reopen the app.
 
 ### Mute behavior
 

@@ -1,5 +1,12 @@
 # Version History
 
+## 1.5 - Group Renaming, Role-Aware Command List
+
+- Added the `#topic <new name>` command (admin-only): changes the group name and notifies every other active member (`"<admin nickname> has changed the group name to <new name>."`).
+- Renaming the group from the dashboard's Edit button now notifies every active member the same way, attributed to "An Admin" (`"An Admin has changed the group name to <new name>."`), via the same new `CommandProcessor.changeGroupName` used by `#topic`. Previously it silently updated `SharedPreferences` with no notification at all.
+- The dashboard's group name now refreshes live (every second, alongside the queue status tick) instead of only on `onResume`, so a rename from any source shows up immediately while the dashboard is open.
+- `#commands` replies now depend on the requester's admin status: `#add`, `#remove`, and `#topic` are only listed for admins. Non-admins get the same reply as before minus those three lines.
+
 ## 1.4 - Nickname Changes
 
 - Added the `#name <new nickname>` command: any member can rename themselves by text. They get a confirmation reply (`"Your name has been changed to <new nickname>."`), and every other active member is notified (`"<old nickname> changed their name to <new nickname>."`).

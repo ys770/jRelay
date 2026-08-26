@@ -18,6 +18,7 @@ import com.sh7411usa.jrelay.db.MessageRepository;
 import com.sh7411usa.jrelay.db.OutboxRepository;
 import com.sh7411usa.jrelay.model.Member;
 import com.sh7411usa.jrelay.model.MessageRecord;
+import com.sh7411usa.jrelay.sms.CommandProcessor;
 import com.sh7411usa.jrelay.sms.SendQueueStatus;
 import com.sh7411usa.jrelay.util.Prefs;
 
@@ -32,6 +33,7 @@ public class MainActivity extends Activity {
     private MemberRepository memberRepository;
     private MessageRepository messageRepository;
     private OutboxRepository outboxRepository;
+    private CommandProcessor commandProcessor;
 
     private TextView groupNameView;
     private TextView statsMembersView;
@@ -66,6 +68,7 @@ public class MainActivity extends Activity {
         memberRepository = new MemberRepository(this);
         messageRepository = new MessageRepository(this);
         outboxRepository = new OutboxRepository(this);
+        commandProcessor = new CommandProcessor(this);
 
         groupNameView = findViewById(R.id.text_group_name);
         statsMembersView = findViewById(R.id.text_stats_members);
@@ -105,8 +108,6 @@ public class MainActivity extends Activity {
     }
 
     private void refresh() {
-        groupNameView.setText(prefs.getGroupName());
-
         List<Member> members = memberRepository.getActiveMembers();
         int adminCount = 0;
         int mutedCount = 0;
@@ -131,6 +132,7 @@ public class MainActivity extends Activity {
     }
 
     private void refreshQueueStatus() {
+        groupNameView.setText(prefs.getGroupName());
         queueCountView.setText(getString(R.string.stats_queue_count, outboxRepository.countUnsent()));
 
         long nextBurstAt = SendQueueStatus.getNextBurstAtMillis();
@@ -190,8 +192,8 @@ public class MainActivity extends Activity {
                 .setView(dialogView)
                 .setPositiveButton(R.string.action_save, (dialog, which) -> {
                     String newName = input.getText().toString().trim();
-                    if (!newName.isEmpty()) {
-                        prefs.setGroupName(newName);
+                    if (!newName.isEmpty() && !newName.equals(prefs.getGroupName())) {
+                        commandProcessor.changeGroupName(newName, getString(R.string.default_added_by_admin), -1);
                         refresh();
                     }
                 })

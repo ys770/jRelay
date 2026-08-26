@@ -50,7 +50,7 @@ public class CommandProcessor {
     private void handleCommand(Member sender, String text) {
         String lower = text.toLowerCase();
         if (lower.equals("#commands")) {
-            reply(sender, context.getString(R.string.tpl_commands_list));
+            handleCommandsList(sender);
         } else if (lower.equals("#mute")) {
             memberRepository.setMuted(sender.id, true);
             reply(sender, context.getString(R.string.tpl_muted_confirm));
@@ -69,9 +69,19 @@ public class CommandProcessor {
             handleAdd(sender, text);
         } else if (lower.startsWith("#remove")) {
             handleRemove(sender, text);
+        } else if (lower.startsWith("#topic")) {
+            handleTopicChange(sender, text);
         } else {
             reply(sender, context.getString(R.string.tpl_unknown_command));
         }
+    }
+
+    private void handleCommandsList(Member requester) {
+        StringBuilder sb = new StringBuilder(context.getString(R.string.tpl_commands_list_common));
+        if (requester.isAdmin) {
+            sb.append(context.getString(R.string.tpl_commands_list_admin_extra));
+        }
+        reply(requester, sb.toString());
     }
 
     private void handleStop(Member sender) {
@@ -216,6 +226,30 @@ public class CommandProcessor {
         String groupName = prefs.getGroupName();
         enqueue(target, context.getString(R.string.tpl_removed_you, groupName), "SYSTEM");
         broadcastExcept(target.id, context.getString(R.string.tpl_removed_other, removedByLabel, target.nickname));
+        SmsSendService.start(context);
+    }
+
+    private void handleTopicChange(Member sender, String text) {
+        if (!sender.isAdmin) {
+            reply(sender, context.getString(R.string.tpl_unauthorized));
+            return;
+        }
+        String newName = stripLeadingWord(text).trim();
+        if (newName.isEmpty()) {
+            return;
+        }
+        changeGroupName(newName, sender.nickname, sender.id);
+    }
+
+    /**
+     * Changes the group name and notifies members. changedByLabel is either an admin's nickname
+     * or "An Admin". excludeId skips that member (the acting admin, who already knows); pass -1
+     * (no matching member id) to notify every active member, e.g. when changed from the app.
+     */
+    public void changeGroupName(String newName, String changedByLabel, long excludeId) {
+        prefs.setGroupName(newName);
+        String message = context.getString(R.string.tpl_group_name_changed, changedByLabel, newName);
+        broadcastExcept(excludeId, message, "SYSTEM");
         SmsSendService.start(context);
     }
 
