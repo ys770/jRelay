@@ -1,5 +1,9 @@
 # Version History
 
+## 1.6 - Fixed Hyphenated Number Entry on Add Member
+
+- `PhoneNumberUtils` already normalized `234-567-8910` and `1-234-567-8910` correctly (confirmed with new `PhoneNumberUtilsTest` unit tests covering all six documented US formats) — the actual bug was the Add Member screen's phone field using `android:inputType="phone"`, which attaches Android's `DialerKeyListener` and silently filters out `-`, `(`, `)`, and spaces as they're typed. Changed it to `textNoSuggestions` so every documented number format can actually be entered there. The `#add` SMS command and the Member Detail "Edit Phone Number" dialog were unaffected (no character restriction on those inputs).
+
 ## 1.5 - Group Renaming, Role-Aware Command List
 
 - Added the `#topic <new name>` command (admin-only): changes the group name and notifies every other active member (`"<admin nickname> has changed the group name to <new name>."`).
