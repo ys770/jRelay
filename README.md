@@ -99,7 +99,7 @@ A **Clear History** button sits above Disband Group, labeled with a rough estima
 
 #### Disband Group
 
-A red **Disband Group** button sits at the bottom of the Rate Limiting screen. Tapping it shows a warning that this will **permanently erase every member and all message history, and that nobody will be notified** — then, to confirm, you have to type back a random 4-digit PIN shown right there in the dialog (a fresh one each time). Get the PIN wrong (or cancel) and nothing happens. Get it right and jRelay wipes its entire database (members, message log, and any still-queued outbound messages) and returns to the dashboard. There's no undo, and nothing is sent to anyone as part of it.
+A red **Disband Group** button sits at the bottom of the Rate Limiting screen. Tapping it shows a warning that this will **permanently erase every member and all message history, and that nobody will be notified** — then, to confirm, you have to type back a random 4-digit PIN shown right there in the dialog (a fresh one each time). Get the PIN wrong (or cancel) and nothing happens. Get it right and jRelay wipes its entire database (members, message log, and any still-queued outbound messages), resets the group name back to the default "jRelay", and returns to the dashboard. There's no undo, and nothing is sent to anyone as part of it.
 
 ### Send to Group
 

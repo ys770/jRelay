@@ -1,5 +1,9 @@
 # Version History
 
+## 1.11 - Disband Resets Group Name
+
+- Disband Group now also resets the group name back to the default "jRelay" (`Prefs.resetGroupName`), instead of leaving the previous group's name behind after all its members and history are erased.
+
 ## 1.10 - #list Header, Dashboard Button Label
 
 - `#list` now replies with the group name, a blank line, then the member list, instead of the bare list.

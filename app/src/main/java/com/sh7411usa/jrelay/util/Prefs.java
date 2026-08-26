@@ -14,6 +14,7 @@ public class Prefs {
     private static final String KEY_MAX_WAIT = "max_wait_seconds";
     private static final String KEY_INITIAL_DELAY_ENABLED = "initial_delay_enabled";
 
+    private static final String DEFAULT_GROUP_NAME = "jRelay";
     private static final int DEFAULT_BURST_MIN = 3;
     private static final int DEFAULT_BURST_MAX = 5;
     private static final int DEFAULT_MIN_WAIT = 3;
@@ -34,11 +35,15 @@ public class Prefs {
     }
 
     public String getGroupName() {
-        return prefs.getString(KEY_GROUP_NAME, "jRelay");
+        return prefs.getString(KEY_GROUP_NAME, DEFAULT_GROUP_NAME);
     }
 
     public void setGroupName(String name) {
         prefs.edit().putString(KEY_GROUP_NAME, name).apply();
+    }
+
+    public void resetGroupName() {
+        setGroupName(DEFAULT_GROUP_NAME);
     }
 
     public int getBurstMin() {

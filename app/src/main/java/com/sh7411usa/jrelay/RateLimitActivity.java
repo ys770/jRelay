@@ -177,6 +177,7 @@ public class RateLimitActivity extends Activity {
 
     private void disbandGroup() {
         DbHelper.getInstance(this).wipeAllData();
+        prefs.resetGroupName();
         Toast.makeText(this, R.string.disband_group_done, Toast.LENGTH_LONG).show();
 
         Intent intent = new Intent(this, MainActivity.class);
