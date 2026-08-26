@@ -43,4 +43,21 @@ public class PhoneNumberUtilsTest {
                 new String[]{"+1 (234) 567-8910", "John Doe"},
                 PhoneNumberUtils.splitLeadingNumberAndRest("+1 (234) 567-8910 John Doe"));
     }
+
+    @Test
+    public void splitTrailingNumberAndRest_handlesNicknameFirst() {
+        assertArrayEquals(
+                new String[]{"234-567-8910", "User"},
+                PhoneNumberUtils.splitTrailingNumberAndRest("User 234-567-8910"));
+        assertArrayEquals(
+                new String[]{"1-234-567-8910", "John Doe"},
+                PhoneNumberUtils.splitTrailingNumberAndRest("John Doe 1-234-567-8910"));
+    }
+
+    @Test
+    public void splitTrailingNumberAndRest_handlesSpaceInsideNumber() {
+        assertArrayEquals(
+                new String[]{"+1 (234) 567-8910", "John Doe"},
+                PhoneNumberUtils.splitTrailingNumberAndRest("John Doe +1 (234) 567-8910"));
+    }
 }

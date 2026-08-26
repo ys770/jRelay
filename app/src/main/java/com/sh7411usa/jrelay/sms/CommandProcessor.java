@@ -157,6 +157,9 @@ public class CommandProcessor {
         String rest = stripLeadingWord(text).trim();
         String[] parts = PhoneNumberUtils.splitLeadingNumberAndRest(rest);
         if (parts == null) {
+            parts = PhoneNumberUtils.splitTrailingNumberAndRest(rest);
+        }
+        if (parts == null) {
             reply(sender, context.getString(R.string.tpl_invalid_number));
             return;
         }

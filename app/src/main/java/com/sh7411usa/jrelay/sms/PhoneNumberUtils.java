@@ -10,15 +10,21 @@ public class PhoneNumberUtils {
      * (some of which contain internal spaces, e.g. "+1 (234) 567-8910"), followed by
      * whitespace and the remaining text (a nickname).
      */
-    private static final Pattern LEADING_NUMBER_PATTERN = Pattern.compile(
-            "^(\\+1\\s?\\(\\d{3}\\)\\s?\\d{3}-?\\d{4}" +
+    private static final String NUMBER_ALTERNATION =
+            "\\+1\\s?\\(\\d{3}\\)\\s?\\d{3}-?\\d{4}" +
                     "|\\+1\\d{10}" +
                     "|1-\\d{3}-\\d{3}-\\d{4}" +
                     "|\\(\\d{3}\\)\\s?\\d{3}-?\\d{4}" +
                     "|\\d{3}-\\d{3}-\\d{4}" +
                     "|\\d{10}" +
-                    "|\\+\\d{8,15})" +
-                    "\\s+(.+)$");
+                    "|\\+\\d{8,15}";
+
+    private static final Pattern LEADING_NUMBER_PATTERN = Pattern.compile(
+            "^(" + NUMBER_ALTERNATION + ")\\s+(.+)$");
+
+    /** Same number formats, but as the last token instead of the first (e.g. "John Doe 234-567-8910"). */
+    private static final Pattern TRAILING_NUMBER_PATTERN = Pattern.compile(
+            "^(.+?)\\s+(" + NUMBER_ALTERNATION + ")$");
 
     public static String normalize(String rawInput) {
         if (rawInput == null) {
@@ -63,6 +69,22 @@ public class PhoneNumberUtils {
         Matcher matcher = LEADING_NUMBER_PATTERN.matcher(text.trim());
         if (matcher.find()) {
             return new String[]{matcher.group(1), matcher.group(2)};
+        }
+        return null;
+    }
+
+    /**
+     * Same as {@link #splitLeadingNumberAndRest}, but for a "<nickname> <number>" argument
+     * string (number last instead of first). Returns {number, nickname}, or null if no
+     * recognizable phone number is found at the end of the text.
+     */
+    public static String[] splitTrailingNumberAndRest(String text) {
+        if (text == null) {
+            return null;
+        }
+        Matcher matcher = TRAILING_NUMBER_PATTERN.matcher(text.trim());
+        if (matcher.matches()) {
+            return new String[]{matcher.group(2), matcher.group(1)};
         }
         return null;
     }

@@ -1,5 +1,9 @@
 # Version History
 
+## 1.7 - Flexible #add Argument Order
+
+- Fixed `#add` rejecting the number with `"Invalid phone number format."` when the nickname came first (e.g. `#add User 234-567-8910`) — only `#add <number> <nickname>` was accepted. Added `PhoneNumberUtils.splitTrailingNumberAndRest`, tried as a fallback whenever the leading-number parse fails, so `#add <nickname> <number>` now works too. Covered by new tests in `PhoneNumberUtilsTest`.
+
 ## 1.6 - Fixed Hyphenated Number Entry on Add Member
 
 - `PhoneNumberUtils` already normalized `234-567-8910` and `1-234-567-8910` correctly (confirmed with new `PhoneNumberUtilsTest` unit tests covering all six documented US formats) — the actual bug was the Add Member screen's phone field using `android:inputType="phone"`, which attaches Android's `DialerKeyListener` and silently filters out `-`, `(`, `)`, and spaces as they're typed. Changed it to `textNoSuggestions` so every documented number format can actually be entered there. The `#add` SMS command and the Member Detail "Edit Phone Number" dialog were unaffected (no character restriction on those inputs).

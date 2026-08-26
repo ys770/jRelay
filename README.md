@@ -112,9 +112,10 @@ Non-admins attempting `#add`, `#remove`, or `#topic` get back: `"Only admins can
 #add +12345678910 Alex
 #add (234) 567-8910 Alex Smith
 #add +1 (234) 567-8910 Alex Smith
+#add Alex Smith 234-567-8910
 ```
 
-Nicknames can contain spaces. jRelay accepts common US phone formats: `+12345678910`, `+1 (234) 567-8910`, `1-234-567-8910`, `234-567-8910`, `2345678910`, and `(234) 567-8910`.
+Nicknames can contain spaces. jRelay accepts common US phone formats: `+12345678910`, `+1 (234) 567-8910`, `1-234-567-8910`, `234-567-8910`, `2345678910`, and `(234) 567-8910` — and the number can go either first or last (`#add <number> <nickname>` or `#add <nickname> <number>`), so it doesn't matter which order feels natural.
 
 When a member is added (by text or from the app), they receive:
 > `<admin> added you to <group name> Group. Reply #stop at anytime to opt out.`
