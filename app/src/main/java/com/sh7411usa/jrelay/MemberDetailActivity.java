@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.ContactsContract;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
@@ -27,6 +29,8 @@ import java.util.concurrent.TimeUnit;
 
 public class MemberDetailActivity extends Activity {
 
+    private static final long STATUS_REFRESH_MS = 1000;
+
     public static final String EXTRA_MEMBER_ID = "extra_member_id";
 
     private MemberRepository memberRepository;
@@ -41,6 +45,16 @@ public class MemberDetailActivity extends Activity {
     private LinearLayout activityContainer;
     private Button adminButton;
     private Button muteButton;
+    private final Handler statusHandler = new Handler(Looper.getMainLooper());
+    private final Runnable statusRefresh = new Runnable() {
+        @Override
+        public void run() {
+            if (member != null) {
+                renderActivity();
+            }
+            statusHandler.postDelayed(this, STATUS_REFRESH_MS);
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,6 +94,13 @@ public class MemberDetailActivity extends Activity {
     protected void onResume() {
         super.onResume();
         refresh();
+        statusHandler.post(statusRefresh);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        statusHandler.removeCallbacks(statusRefresh);
     }
 
     private void refresh() {

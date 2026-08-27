@@ -52,6 +52,7 @@ public class MainActivity extends Activity {
         @Override
         public void run() {
             refreshQueueStatus();
+            renderRecentActivity();
             queueStatusHandler.postDelayed(this, QUEUE_STATUS_TICK_MS);
         }
     };

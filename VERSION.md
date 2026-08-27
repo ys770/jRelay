@@ -1,5 +1,11 @@
 # Version History
 
+## 1.15 - Historical Status Backfill and Live Refresh
+
+- Added a one-time SQLite v3-to-v4 migration that safely links historical outbox records to the nearest unlinked outbound history row only when member, full message body, and timestamp (within 10 seconds) agree.
+- Dashboard Recent Activity and open member-history screens now refresh delivery labels every second as sent/delivery callbacks arrive.
+- Preserves unmatched history rather than attaching a potentially incorrect delivery status.
+
 ## 1.14 - Inline Delivery Status
 
 - Linked every newly queued outbox row to its exact outbound message-log row through a non-destructive SQLite v2-to-v3 migration.

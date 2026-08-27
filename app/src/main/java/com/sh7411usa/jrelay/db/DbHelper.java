@@ -1,13 +1,15 @@
 package com.sh7411usa.jrelay.db;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class DbHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "jrelay.db";
-    private static final int DB_VERSION = 3;
+    private static final int DB_VERSION = 4;
 
     public static final String TABLE_MEMBERS = "members";
     public static final String TABLE_MESSAGE_LOG = "message_log";
@@ -79,6 +81,36 @@ public class DbHelper extends SQLiteOpenHelper {
         if (oldVersion < 3) {
             db.execSQL("ALTER TABLE " + TABLE_OUTBOX + " ADD COLUMN message_log_id INTEGER");
         }
+        if (oldVersion < 4) {
+            backfillMessageLogIds(db);
+        }
+    }
+
+    private void backfillMessageLogIds(SQLiteDatabase db) {
+        Cursor outbox = db.query(TABLE_OUTBOX,
+                new String[]{"id", "member_id", "body", "enqueued_at"},
+                "message_log_id IS NULL", null, null, null, "enqueued_at ASC");
+        while (outbox.moveToNext()) {
+            long outboxId = outbox.getLong(0);
+            if (outbox.isNull(1)) {
+                continue;
+            }
+            long memberId = outbox.getLong(1);
+            String body = outbox.getString(2);
+            long enqueuedAt = outbox.getLong(3);
+            Cursor message = db.rawQuery("SELECT id, ABS(timestamp - ?) AS distance FROM " +
+                            TABLE_MESSAGE_LOG + " WHERE direction = 'OUT' AND member_id = ? AND body = ? " +
+                            "AND id NOT IN (SELECT message_log_id FROM " + TABLE_OUTBOX +
+                            " WHERE message_log_id IS NOT NULL) ORDER BY distance ASC LIMIT 1",
+                    new String[]{String.valueOf(enqueuedAt), String.valueOf(memberId), body});
+            if (message.moveToFirst() && message.getLong(1) <= 10000) {
+                ContentValues cv = new ContentValues();
+                cv.put("message_log_id", message.getLong(0));
+                db.update(TABLE_OUTBOX, cv, "id = ?", new String[]{String.valueOf(outboxId)});
+            }
+            message.close();
+        }
+        outbox.close();
     }
 
     /** Permanently erases every member, message, and queued outbound message. Used only by "Disband Group". */
