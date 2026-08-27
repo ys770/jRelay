@@ -35,9 +35,8 @@ public class CommandProcessor {
             return;
         }
 
-        messageRepository.log(sender.id, "IN", "RELAY", body);
-
         String trimmed = body == null ? "" : body.trim();
+        messageRepository.log(sender.id, "IN", trimmed.startsWith("#") ? "COMMAND" : "RELAY", body);
         if (trimmed.startsWith("#")) {
             handleCommand(sender, trimmed);
         } else if (!sender.isMuted) {

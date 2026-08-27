@@ -22,6 +22,7 @@ import com.sh7411usa.jrelay.sms.CommandProcessor;
 import com.sh7411usa.jrelay.sms.SendQueueStatus;
 import com.sh7411usa.jrelay.util.Prefs;
 import com.sh7411usa.jrelay.util.UiUtil;
+import com.sh7411usa.jrelay.util.MessageDetailsDialog;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -181,10 +182,11 @@ public class MainActivity extends Activity {
             TextView metaView = row.findViewById(R.id.text_message_meta);
             bodyView.setText(record.body);
             String memberLabel = "";
+            Member rowMember = null;
             if (record.memberId != null) {
-                Member m = memberRepository.findById(record.memberId);
-                if (m != null) {
-                    memberLabel = m.nickname + " • ";
+                rowMember = memberRepository.findById(record.memberId);
+                if (rowMember != null) {
+                    memberLabel = rowMember.nickname + " • ";
                 }
             }
             String meta = memberLabel + DateFormat.format("MMM d, h:mm a", record.timestamp);
@@ -194,6 +196,12 @@ public class MainActivity extends Activity {
                 meta += " • " + deliveryStatus;
             }
             metaView.setText(meta);
+            Member detailsMember = rowMember;
+            row.setLongClickable(true);
+            row.setOnLongClickListener(v -> {
+                MessageDetailsDialog.show(this, record, detailsMember);
+                return true;
+            });
 
             if (record.memberId != null) {
                 long memberId = record.memberId;

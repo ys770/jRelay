@@ -145,18 +145,40 @@ public class MessageRepository {
         r.deliveryStatus = statusIdx < 0 || c.isNull(statusIdx) ? null : c.getString(statusIdx);
         int errorIdx = c.getColumnIndex("delivery_error_code");
         r.deliveryErrorCode = errorIdx < 0 || c.isNull(errorIdx) ? null : c.getInt(errorIdx);
+        int phoneIdx = c.getColumnIndex("delivery_phone");
+        r.deliveryPhone = phoneIdx < 0 || c.isNull(phoneIdx) ? null : c.getString(phoneIdx);
+        r.enqueuedAt = nullableLong(c, "delivery_enqueued_at");
+        r.submittedAt = nullableLong(c, "delivery_submitted_at");
+        r.deliveredAt = nullableLong(c, "delivery_delivered_at");
+        r.partsTotal = nullableInt(c, "delivery_parts_total");
+        r.partsSent = nullableInt(c, "delivery_parts_sent");
+        r.partsDelivered = nullableInt(c, "delivery_parts_delivered");
         return r;
     }
 
     private Cursor recentQuery(String selection, String[] selectionArgs, int limit) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String sql = "SELECT ml.*, o.status AS delivery_status, " +
-                "o.error_code AS delivery_error_code FROM " + DbHelper.TABLE_MESSAGE_LOG + " ml " +
+                "o.error_code AS delivery_error_code, o.phone_e164 AS delivery_phone, " +
+                "o.enqueued_at AS delivery_enqueued_at, o.submitted_at AS delivery_submitted_at, " +
+                "o.delivered_at AS delivery_delivered_at, o.parts_total AS delivery_parts_total, " +
+                "o.parts_sent AS delivery_parts_sent, o.parts_delivered AS delivery_parts_delivered FROM " +
+                DbHelper.TABLE_MESSAGE_LOG + " ml " +
                 "LEFT JOIN " + DbHelper.TABLE_OUTBOX + " o ON o.message_log_id = ml.id";
         if (selection != null) {
             sql += " WHERE " + selection;
         }
         sql += " ORDER BY ml.timestamp DESC LIMIT " + Math.max(1, limit);
         return db.rawQuery(sql, selectionArgs);
+    }
+
+    private Long nullableLong(Cursor c, String column) {
+        int idx = c.getColumnIndex(column);
+        return idx < 0 || c.isNull(idx) ? null : c.getLong(idx);
+    }
+
+    private Integer nullableInt(Cursor c, String column) {
+        int idx = c.getColumnIndex(column);
+        return idx < 0 || c.isNull(idx) ? null : c.getInt(idx);
     }
 }

@@ -9,4 +9,11 @@ public class MessageRecord {
     public long timestamp;
     public String deliveryStatus;
     public Integer deliveryErrorCode;
+    public String deliveryPhone;
+    public Long enqueuedAt;
+    public Long submittedAt;
+    public Long deliveredAt;
+    public Integer partsTotal;
+    public Integer partsSent;
+    public Integer partsDelivered;
 }

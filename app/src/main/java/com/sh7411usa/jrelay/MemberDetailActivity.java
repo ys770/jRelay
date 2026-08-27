@@ -23,6 +23,7 @@ import com.sh7411usa.jrelay.model.MessageRecord;
 import com.sh7411usa.jrelay.sms.CommandProcessor;
 import com.sh7411usa.jrelay.sms.PhoneNumberUtils;
 import com.sh7411usa.jrelay.util.UiUtil;
+import com.sh7411usa.jrelay.util.MessageDetailsDialog;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -160,6 +161,14 @@ public class MemberDetailActivity extends Activity {
                 meta += " • " + deliveryStatus;
             }
             metaView.setText(meta);
+            row.setClickable(true);
+            row.setFocusable(true);
+            row.setLongClickable(true);
+            row.setBackgroundResource(R.drawable.focus_highlight);
+            row.setOnLongClickListener(v -> {
+                MessageDetailsDialog.show(this, record, member);
+                return true;
+            });
             activityContainer.addView(row);
         }
     }

@@ -1,5 +1,13 @@
 # Version History
 
+## 1.18 - Long-Press Message Details
+
+- Added a long-press **Message Details** dialog to dashboard Recent Activity and each member's history while preserving the dashboard's normal tap-to-open-member behavior.
+- Outbound details include exact recipient number, type, created/queued/submitted/delivered times, status, character count, multipart submitted/delivered/total progress, and readable error information.
+- Incoming details include sender, number, received time, character count, and whether the message was a command or regular relay text.
+- Newly received `#` messages are now logged with the COMMAND category so their details are accurate; existing history remains unchanged.
+- Message history rows are focusable with the existing DPAD focus highlight so long-press details remain accessible on small non-touch devices.
+
 ## 1.17 - Admin Rename Command
 
 - Added the admin-only `#rename <number> <new nickname>` command, with support for spaces in both common formatted phone numbers and nicknames.
