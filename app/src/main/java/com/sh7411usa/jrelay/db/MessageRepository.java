@@ -53,6 +53,16 @@ public class MessageRepository {
         return list;
     }
 
+    public List<MessageRecord> getFailedOutgoing(int limit) {
+        Cursor c = recentQuery("o.status IN ('FAILED', 'DELIVERY_FAILED', 'RETRY_PENDING')", null, limit);
+        List<MessageRecord> list = new ArrayList<>();
+        while (c.moveToNext()) {
+            list.add(fromCursor(c));
+        }
+        c.close();
+        return list;
+    }
+
     public int countForMember(long memberId, String direction) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor c = db.rawQuery("SELECT COUNT(*) FROM " + DbHelper.TABLE_MESSAGE_LOG +

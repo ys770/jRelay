@@ -1,5 +1,10 @@
 # Version History
 
+## 1.21 - Failed Messages View
+
+- Added a dashboard **Failed Messages** screen listing send failures, delivery failures, and scheduled retries in one place.
+- Tapping or holding a failed message opens full Message Details, including the duplicate-safe Retry action when Android submitted zero SMS segments.
+
 ## 1.20 - Member History Long-Press Fix
 
 - Fixed member message-history rows being rebuilt by the one-second delivery-status refresh while they were being held, which could cancel the Message Details long-press gesture.

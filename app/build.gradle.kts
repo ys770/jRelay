@@ -14,8 +14,8 @@ android {
         applicationId = "com.sh7411usa.jrelay"
         minSdk = 24
         targetSdk = 36
-        versionCode = 9
-        versionName = "1.20"
+        versionCode = 10
+        versionName = "1.21"
     }
 
     buildTypes {

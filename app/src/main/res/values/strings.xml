@@ -24,6 +24,10 @@
     <string name="stats_delivery_summary">Delivered: %1$d  Submitted: %2$d  Failed: %3$d</string>
     <string name="stats_next_burst">Next burst in %1$s (%2$d messages)</string>
     <string name="send_group_message_shortcut">Send to Group</string>
+    <string name="view_failed_messages">Failed Messages</string>
+    <string name="failed_messages_title">Failed Messages</string>
+    <string name="failed_messages_help">Tap or hold a message for details and a safe Retry option when available.</string>
+    <string name="no_failed_messages">No failed messages.</string>
     <string name="recent_activity">Recent Activity</string>
     <string name="no_activity_yet">No activity yet.</string>
     <string name="message_details_title">Message Details</string>

@@ -94,6 +94,8 @@ public class MainActivity extends Activity {
                 startActivity(new Intent(this, RateLimitActivity.class)));
         findViewById(R.id.button_send_group_message).setOnClickListener(v ->
                 startActivity(new Intent(this, SendGroupMessageActivity.class)));
+        findViewById(R.id.button_failed_messages).setOnClickListener(v ->
+                startActivity(new Intent(this, FailedMessagesActivity.class)));
     }
 
     @Override
