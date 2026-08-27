@@ -63,6 +63,8 @@ public class CommandProcessor {
             handleList(sender);
         } else if (lower.startsWith("#name")) {
             handleNameChange(sender, text);
+        } else if (lower.startsWith("#rename")) {
+            handleAdminRename(sender, text);
         } else if (lower.startsWith("#admin")) {
             handleAdminMessage(sender, text);
         } else if (lower.startsWith("#add")) {
@@ -126,6 +128,36 @@ public class CommandProcessor {
         memberRepository.setNickname(sender.id, newNickname);
         reply(sender, context.getString(R.string.tpl_name_changed_confirm, newNickname));
         broadcastExcept(sender.id, context.getString(R.string.tpl_name_changed_self_other, oldNickname, newNickname));
+    }
+
+    private void handleAdminRename(Member sender, String text) {
+        if (!sender.isAdmin) {
+            reply(sender, context.getString(R.string.tpl_unauthorized));
+            return;
+        }
+        String rest = stripLeadingWord(text).trim();
+        String[] parts = PhoneNumberUtils.splitLeadingNumberAndRest(rest);
+        if (parts == null) {
+            reply(sender, context.getString(R.string.tpl_rename_usage));
+            return;
+        }
+        String normalized = PhoneNumberUtils.normalize(parts[0]);
+        String newNickname = parts[1].trim();
+        if (normalized == null || newNickname.isEmpty()) {
+            reply(sender, context.getString(R.string.tpl_rename_usage));
+            return;
+        }
+        Member target = memberRepository.findByPhone(normalized);
+        if (target == null || !target.active) {
+            reply(sender, context.getString(R.string.tpl_member_not_found));
+            return;
+        }
+        String oldNickname = target.nickname;
+        memberRepository.setNickname(target.id, newNickname);
+        String notice = context.getString(R.string.tpl_name_changed_admin_other,
+                sender.nickname, oldNickname, newNickname);
+        broadcastExcept(sender.id, notice);
+        reply(sender, notice);
     }
 
     /** Renames a member from the app UI and notifies the rest of the group. changedByLabel is typically "An Admin". */

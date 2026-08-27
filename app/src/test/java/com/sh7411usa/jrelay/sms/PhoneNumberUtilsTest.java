@@ -45,6 +45,13 @@ public class PhoneNumberUtilsTest {
     }
 
     @Test
+    public void splitLeadingNumberAndRest_supportsAdminRenameSyntax() {
+        assertArrayEquals(
+                new String[]{"914-433-5742", "Rabbi New Name"},
+                PhoneNumberUtils.splitLeadingNumberAndRest("914-433-5742 Rabbi New Name"));
+    }
+
+    @Test
     public void splitTrailingNumberAndRest_handlesNicknameFirst() {
         assertArrayEquals(
                 new String[]{"234-567-8910", "User"},

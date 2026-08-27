@@ -151,11 +151,13 @@
     <string name="tpl_unauthorized">Only admins can use this command.</string>
     <string name="tpl_unknown_command">Unknown command. Reply #commands for a list of commands.</string>
     <string name="tpl_invalid_number">Invalid phone number format.</string>
+    <string name="tpl_rename_usage">Usage: #rename &lt;number&gt; &lt;new nickname&gt;</string>
+    <string name="tpl_member_not_found">No active member was found with that phone number.</string>
     <string name="tpl_relay_prefix">%1$s: %2$s</string>
     <string name="tpl_admin_relay_prefix">[Admin-only from %1$s]: %2$s</string>
     <string name="tpl_dm_prefix">[Admin]: %1$s</string>
     <string name="tpl_commands_list_common">Available commands:\n#commands - show this list\n#mute - pause messages\n#unmute - resume messages\n#stop - leave the group\n#list - list members\n#name &lt;new nickname&gt; - change your nickname\n#admin &lt;message&gt; - message admins only</string>
-    <string name="tpl_commands_list_admin_extra">\n(Admins) #add &lt;number&gt; [nickname] - add a member\n(Admins) #remove &lt;nickname or number&gt; - remove a member\n(Admins) #topic &lt;new name&gt; - change the group name</string>
+    <string name="tpl_commands_list_admin_extra">\n(Admins) #add &lt;number&gt; [nickname] - add a member\n(Admins) #remove &lt;nickname or number&gt; - remove a member\n(Admins) #rename &lt;number&gt; &lt;new nickname&gt; - rename a member\n(Admins) #topic &lt;new name&gt; - change the group name</string>
     <string name="tpl_list_you">(You)</string>
     <string name="tpl_list_admin">(admin)</string>
     <string name="default_added_by_admin">An Admin</string>

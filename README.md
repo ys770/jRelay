@@ -125,9 +125,18 @@ A dedicated screen (opened from the dashboard's **Send to Group** button) for se
 | `#admin <message>` | anyone | Sends `<message>` to admins only, and pops up a notification on the host device. Non-admins can use this to reach admins directly |
 | `#add <number> [nickname]` | admins only | Adds a new member; nickname is optional |
 | `#remove <nickname or number>` | admins only | Removes a member |
+| `#rename <number> <new nickname>` | admins only | Renames a member identified by phone number |
 | `#topic <new name>` | admins only | Renames the group (see below) |
 
-Non-admins attempting `#add`, `#remove`, or `#topic` get back: `"Only admins can use this command."` An unrecognized `#` command gets: `"Unknown command. Reply #commands for a list of commands."` `#commands` itself only lists the admin-only commands to admins — a regular member's reply omits `#add`, `#remove`, and `#topic` entirely.
+Non-admins attempting `#add`, `#remove`, `#rename`, or `#topic` get back: `"Only admins can use this command."` An unrecognized `#` command gets: `"Unknown command. Reply #commands for a list of commands."` `#commands` itself only lists the admin-only commands to admins.
+
+### Renaming a member by text
+
+```
+#rename 914-433-5742 Rabbi New Name
+```
+
+Admin-only. The phone number must belong to an active member; the new nickname may contain spaces. Using a phone number avoids ambiguity when two members have the same nickname.
 
 ### Adding a member by text
 

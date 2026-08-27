@@ -1,5 +1,11 @@
 # Version History
 
+## 1.17 - Admin Rename Command
+
+- Added the admin-only `#rename <number> <new nickname>` command, with support for spaces in both common formatted phone numbers and nicknames.
+- The command requires an active member's phone number, returns clear usage/not-found replies, and sends the existing admin rename notice to the acting admin and other unmuted members.
+- Added `#rename` to the admin command-help response and covered its number/nickname parsing with a unit test.
+
 ## 1.16 - Optional Member Nicknames
 
 - Members can now be added without a nickname from the Add Member screen, `#add`, or CSV import.
