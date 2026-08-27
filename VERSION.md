@@ -1,5 +1,10 @@
 # Version History
 
+## 1.22 - Retry All Safe Failures
+
+- Added a confirmed **Retry All Safe** action to Failed Messages that requeues only send failures with zero submitted SMS segments.
+- Delivery failures and partial multipart submissions remain excluded to prevent duplicate messages.
+
 ## 1.21 - Failed Messages View
 
 - Added a dashboard **Failed Messages** screen listing send failures, delivery failures, and scheduled retries in one place.

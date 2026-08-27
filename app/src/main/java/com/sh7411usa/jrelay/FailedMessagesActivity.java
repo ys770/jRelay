@@ -10,13 +10,17 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.app.AlertDialog;
 
 import com.sh7411usa.jrelay.db.MemberRepository;
 import com.sh7411usa.jrelay.db.MessageRepository;
+import com.sh7411usa.jrelay.db.OutboxRepository;
 import com.sh7411usa.jrelay.model.Member;
 import com.sh7411usa.jrelay.model.MessageRecord;
 import com.sh7411usa.jrelay.util.MessageDetailsDialog;
 import com.sh7411usa.jrelay.util.UiUtil;
+import com.sh7411usa.jrelay.sms.SmsSendService;
 
 import java.util.List;
 
@@ -41,6 +45,21 @@ public class FailedMessagesActivity extends Activity {
         members = new MemberRepository(this);
         container = findViewById(R.id.container_failed_messages);
         emptyView = findViewById(R.id.text_no_failed_messages);
+        findViewById(R.id.button_retry_all_safe).setOnClickListener(v -> confirmRetryAll());
+    }
+
+    private void confirmRetryAll() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.retry_all_safe_title)
+                .setMessage(R.string.retry_all_safe_warning)
+                .setNegativeButton(android.R.string.cancel, null)
+                .setPositiveButton(R.string.retry_all_safe, (dialog, which) -> {
+                    int count = new OutboxRepository(this).retryAllSafe();
+                    if (count > 0) SmsSendService.start(this);
+                    Toast.makeText(this, getString(R.string.retry_all_safe_result, count), Toast.LENGTH_SHORT).show();
+                    renderMessages();
+                })
+                .show();
     }
 
     @Override protected void onResume() {

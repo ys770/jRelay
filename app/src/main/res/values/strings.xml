@@ -28,6 +28,10 @@
     <string name="failed_messages_title">Failed Messages</string>
     <string name="failed_messages_help">Tap or hold a message for details and a safe Retry option when available.</string>
     <string name="no_failed_messages">No failed messages.</string>
+    <string name="retry_all_safe">Retry All Safe</string>
+    <string name="retry_all_safe_title">Retry Safe Failures?</string>
+    <string name="retry_all_safe_warning">Requeue every failed message for which Android reported zero submitted SMS segments? Partial sends and delivery failures will not be retried.</string>
+    <string name="retry_all_safe_result">Queued %1$d message(s) for retry.</string>
     <string name="recent_activity">Recent Activity</string>
     <string name="no_activity_yet">No activity yet.</string>
     <string name="message_details_title">Message Details</string>

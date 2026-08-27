@@ -222,6 +222,15 @@ public class OutboxRepository {
                 new String[]{String.valueOf(id)}) == 1;
     }
 
+    /** Requeues only failures for which Android reported zero submitted segments. */
+    public int retryAllSafe() {
+        ContentValues cv = new ContentValues();
+        cv.put("status", "PENDING");
+        cv.putNull("next_retry_at");
+        return dbHelper.getWritableDatabase().update(DbHelper.TABLE_OUTBOX, cv,
+                "status IN ('FAILED', 'RETRY_PENDING') AND parts_sent = 0", null);
+    }
+
     public int countByStatus(String... statuses) {
         if (statuses.length == 0) {
             return 0;
