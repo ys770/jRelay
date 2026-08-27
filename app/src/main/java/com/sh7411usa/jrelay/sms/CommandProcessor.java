@@ -158,10 +158,7 @@ public class CommandProcessor {
             return;
         }
         String rest = stripLeadingWord(text).trim();
-        String[] parts = PhoneNumberUtils.splitLeadingNumberAndRest(rest);
-        if (parts == null) {
-            parts = PhoneNumberUtils.splitTrailingNumberAndRest(rest);
-        }
+        String[] parts = PhoneNumberUtils.splitNumberAndOptionalNickname(rest);
         if (parts == null) {
             reply(sender, context.getString(R.string.tpl_invalid_number));
             return;
@@ -170,10 +167,6 @@ public class CommandProcessor {
         String nickname = parts[1].trim();
         if (normalized == null) {
             reply(sender, context.getString(R.string.tpl_invalid_number));
-            return;
-        }
-        if (nickname.isEmpty()) {
-            reply(sender, context.getString(R.string.error_empty_nickname));
             return;
         }
         Member existing = memberRepository.findByPhone(normalized);
@@ -187,17 +180,23 @@ public class CommandProcessor {
     /** Adds a member and sends the standard welcome/broadcast messages. addedByLabel is either an admin's nickname or "An Admin". */
     public void addMember(String normalizedPhone, String nickname, String addedByLabel) {
         Member existing = memberRepository.findByPhone(normalizedPhone);
+        String effectiveNickname = nickname == null ? "" : nickname.trim();
+        if (effectiveNickname.isEmpty()) {
+            effectiveNickname = existing != null && existing.nickname != null && !existing.nickname.trim().isEmpty()
+                    ? existing.nickname
+                    : PhoneNumberUtils.defaultNickname(normalizedPhone);
+        }
         long id;
         if (existing != null && !existing.active) {
-            memberRepository.reactivate(existing.id, nickname, addedByLabel);
+            memberRepository.reactivate(existing.id, effectiveNickname, addedByLabel);
             id = existing.id;
         } else {
-            id = memberRepository.insert(normalizedPhone, nickname, false, addedByLabel);
+            id = memberRepository.insert(normalizedPhone, effectiveNickname, false, addedByLabel);
         }
         Member newMember = memberRepository.findById(id);
         String groupName = prefs.getGroupName();
         enqueue(newMember, context.getString(R.string.tpl_added_you, addedByLabel, groupName), "SYSTEM");
-        broadcastExcept(id, context.getString(R.string.tpl_added_other, addedByLabel, nickname));
+        broadcastExcept(id, context.getString(R.string.tpl_added_other, addedByLabel, effectiveNickname));
         SmsSendService.start(context);
     }
 

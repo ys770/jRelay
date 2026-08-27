@@ -60,4 +60,16 @@ public class PhoneNumberUtilsTest {
                 new String[]{"+1 (234) 567-8910", "John Doe"},
                 PhoneNumberUtils.splitTrailingNumberAndRest("John Doe +1 (234) 567-8910"));
     }
+
+    @Test
+    public void splitNumberAndOptionalNickname_acceptsNumberOnly() {
+        assertArrayEquals(
+                new String[]{"234-567-8910", ""},
+                PhoneNumberUtils.splitNumberAndOptionalNickname("234-567-8910"));
+    }
+
+    @Test
+    public void defaultNickname_usesOnlyLastFourDigits() {
+        assertEquals("Member 8910", PhoneNumberUtils.defaultNickname(EXPECTED));
+    }
 }

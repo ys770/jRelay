@@ -1,5 +1,12 @@
 # Version History
 
+## 1.16 - Optional Member Nicknames
+
+- Members can now be added without a nickname from the Add Member screen, `#add`, or CSV import.
+- Missing nicknames receive a privacy-friendly `Member ####` label based on the last four digits rather than exposing the full phone number through `#list`.
+- Re-adding an inactive member without a nickname preserves their previous nickname.
+- Updated command help and the Add Member hint to show that nicknames are optional, with unit coverage for number-only parsing and generated labels.
+
 ## 1.15 - Historical Status Backfill and Live Refresh
 
 - Added a one-time SQLite v3-to-v4 migration that safely links historical outbox records to the nearest unlinked outbound history row only when member, full message body, and timestamp (within 10 seconds) agree.
