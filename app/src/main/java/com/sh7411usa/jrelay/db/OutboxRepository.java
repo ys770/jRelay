@@ -15,6 +15,11 @@ public class OutboxRepository {
         public Long memberId;
         public String phoneE164;
         public String body;
+        public String status;
+        public long enqueuedAt;
+        public Long submittedAt;
+        public Long deliveredAt;
+        public Integer errorCode;
     }
 
     private final DbHelper dbHelper;
@@ -91,18 +96,118 @@ public class OutboxRepository {
         return count;
     }
 
-    public void markSent(long id) {
-        updateStatus(id, "SENT");
-    }
-
-    public void markFailed(long id) {
-        updateStatus(id, "FAILED");
-    }
-
-    private void updateStatus(long id, String status) {
+    public void prepareTracking(long id, int partsTotal) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put("status", status);
+        cv.put("parts_total", Math.max(1, partsTotal));
+        cv.put("parts_sent", 0);
+        cv.put("parts_delivered", 0);
+        cv.putNull("submitted_at");
+        cv.putNull("delivered_at");
+        cv.putNull("error_code");
         db.update(DbHelper.TABLE_OUTBOX, cv, "id = ?", new String[]{String.valueOf(id)});
+    }
+
+    public void recordPartSent(long id, boolean success, int resultCode) {
+        recordPartResult(id, success, resultCode, false);
+    }
+
+    public void recordPartDelivered(long id, boolean success, int resultCode) {
+        recordPartResult(id, success, resultCode, true);
+    }
+
+    private void recordPartResult(long id, boolean success, int resultCode, boolean delivery) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            Cursor c = db.query(DbHelper.TABLE_OUTBOX,
+                    new String[]{"status", "parts_total", "parts_sent", "parts_delivered"},
+                    "id = ?", new String[]{String.valueOf(id)}, null, null, null);
+            if (!c.moveToFirst()) {
+                c.close();
+                db.setTransactionSuccessful();
+                return;
+            }
+            String status = c.getString(0);
+            int total = Math.max(1, c.getInt(1));
+            int sent = c.getInt(2);
+            int delivered = c.getInt(3);
+            c.close();
+
+            ContentValues cv = new ContentValues();
+            if (!success) {
+                cv.put("status", delivery ? "DELIVERY_FAILED" : "FAILED");
+                cv.put("error_code", resultCode);
+            } else if (delivery && !"FAILED".equals(status) && !"DELIVERY_FAILED".equals(status)) {
+                delivered++;
+                cv.put("parts_delivered", delivered);
+                if (delivered >= total) {
+                    cv.put("status", "DELIVERED");
+                    cv.put("delivered_at", System.currentTimeMillis());
+                }
+            } else if (!"FAILED".equals(status) && !"DELIVERY_FAILED".equals(status)) {
+                sent++;
+                cv.put("parts_sent", sent);
+                if (sent >= total) {
+                    cv.put("status", "SENT");
+                    cv.put("submitted_at", System.currentTimeMillis());
+                }
+            }
+            db.update(DbHelper.TABLE_OUTBOX, cv, "id = ?", new String[]{String.valueOf(id)});
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    public void markFailed(long id, int errorCode) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("status", "FAILED");
+        cv.put("error_code", errorCode);
+        db.update(DbHelper.TABLE_OUTBOX, cv, "id = ?", new String[]{String.valueOf(id)});
+    }
+
+    public int countByStatus(String... statuses) {
+        if (statuses.length == 0) {
+            return 0;
+        }
+        StringBuilder placeholders = new StringBuilder();
+        for (int i = 0; i < statuses.length; i++) {
+            if (i > 0) placeholders.append(',');
+            placeholders.append('?');
+        }
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor c = db.rawQuery("SELECT COUNT(*) FROM " + DbHelper.TABLE_OUTBOX +
+                " WHERE status IN (" + placeholders + ")", statuses);
+        int count = c.moveToFirst() ? c.getInt(0) : 0;
+        c.close();
+        return count;
+    }
+
+    public List<OutboxItem> getRecent(int limit) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor c = db.query(DbHelper.TABLE_OUTBOX, null, null, null, null, null,
+                "enqueued_at DESC", String.valueOf(limit));
+        List<OutboxItem> list = new ArrayList<>();
+        while (c.moveToNext()) {
+            OutboxItem item = new OutboxItem();
+            item.id = c.getLong(c.getColumnIndexOrThrow("id"));
+            int memberIdx = c.getColumnIndexOrThrow("member_id");
+            item.memberId = c.isNull(memberIdx) ? null : c.getLong(memberIdx);
+            item.phoneE164 = c.getString(c.getColumnIndexOrThrow("phone_e164"));
+            item.body = c.getString(c.getColumnIndexOrThrow("body"));
+            item.status = c.getString(c.getColumnIndexOrThrow("status"));
+            item.enqueuedAt = c.getLong(c.getColumnIndexOrThrow("enqueued_at"));
+            int submittedIdx = c.getColumnIndexOrThrow("submitted_at");
+            item.submittedAt = c.isNull(submittedIdx) ? null : c.getLong(submittedIdx);
+            int deliveredIdx = c.getColumnIndexOrThrow("delivered_at");
+            item.deliveredAt = c.isNull(deliveredIdx) ? null : c.getLong(deliveredIdx);
+            int errorIdx = c.getColumnIndexOrThrow("error_code");
+            item.errorCode = c.isNull(errorIdx) ? null : c.getInt(errorIdx);
+            list.add(item);
+        }
+        c.close();
+        return list;
     }
 }

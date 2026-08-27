@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DbHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "jrelay.db";
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
 
     public static final String TABLE_MEMBERS = "members";
     public static final String TABLE_MESSAGE_LOG = "message_log";
@@ -55,16 +55,26 @@ public class DbHelper extends SQLiteOpenHelper {
                 "phone_e164 TEXT NOT NULL," +
                 "body TEXT NOT NULL," +
                 "enqueued_at INTEGER NOT NULL," +
-                "status TEXT NOT NULL DEFAULT 'PENDING'" +
+                "status TEXT NOT NULL DEFAULT 'PENDING'," +
+                "parts_total INTEGER NOT NULL DEFAULT 1," +
+                "parts_sent INTEGER NOT NULL DEFAULT 0," +
+                "parts_delivered INTEGER NOT NULL DEFAULT 0," +
+                "submitted_at INTEGER," +
+                "delivered_at INTEGER," +
+                "error_code INTEGER" +
                 ")");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_OUTBOX);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESSAGE_LOG);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEMBERS);
-        onCreate(db);
+        if (oldVersion < 2) {
+            db.execSQL("ALTER TABLE " + TABLE_OUTBOX + " ADD COLUMN parts_total INTEGER NOT NULL DEFAULT 1");
+            db.execSQL("ALTER TABLE " + TABLE_OUTBOX + " ADD COLUMN parts_sent INTEGER NOT NULL DEFAULT 0");
+            db.execSQL("ALTER TABLE " + TABLE_OUTBOX + " ADD COLUMN parts_delivered INTEGER NOT NULL DEFAULT 0");
+            db.execSQL("ALTER TABLE " + TABLE_OUTBOX + " ADD COLUMN submitted_at INTEGER");
+            db.execSQL("ALTER TABLE " + TABLE_OUTBOX + " ADD COLUMN delivered_at INTEGER");
+            db.execSQL("ALTER TABLE " + TABLE_OUTBOX + " ADD COLUMN error_code INTEGER");
+        }
     }
 
     /** Permanently erases every member, message, and queued outbound message. Used only by "Disband Group". */

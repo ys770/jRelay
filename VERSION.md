@@ -1,5 +1,14 @@
 # Version History
 
+## 1.13 - SMS Send and Delivery Reporting
+
+- Added per-part `PendingIntent` callbacks for both SMS submission and carrier delivery reports, including multipart messages.
+- Outbox entries now move through Queued, Sending, Submitted, Delivered, Send Failed, and Delivery Failed states instead of being marked sent immediately after calling `SmsManager`.
+- Added a non-destructive SQLite v1-to-v2 migration that preserves members, message history, settings, and existing outbox records while adding part counters, timestamps, and error codes.
+- Added a dashboard delivery summary and a DPAD-compatible **Delivery Status** screen showing the 100 most recent outbound messages, recipient, state, time, and error code when available.
+- Added high-priority local notifications when Android rejects a send or a carrier reports delivery failure.
+- Existing `SENT` outbox records are retained as Submitted; delivery status is available only for messages sent after upgrading.
+
 ## 1.12 - In-App License Viewer
 
 - Added `app/src/main/assets/license.html`, an HTML transcription of `LICENSE.md`.

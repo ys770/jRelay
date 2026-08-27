@@ -43,6 +43,7 @@ public class MainActivity extends Activity {
     private TextView statsMessagesTodayView;
     private TextView statsMessagesTotalView;
     private TextView queueCountView;
+    private TextView deliverySummaryView;
     private TextView nextBurstView;
     private LinearLayout recentActivityContainer;
 
@@ -78,6 +79,7 @@ public class MainActivity extends Activity {
         statsMessagesTodayView = findViewById(R.id.text_stats_messages_today);
         statsMessagesTotalView = findViewById(R.id.text_stats_messages_total);
         queueCountView = findViewById(R.id.text_queue_count);
+        deliverySummaryView = findViewById(R.id.text_delivery_summary);
         nextBurstView = findViewById(R.id.text_next_burst);
         recentActivityContainer = findViewById(R.id.container_recent_activity);
 
@@ -90,6 +92,8 @@ public class MainActivity extends Activity {
                 startActivity(new Intent(this, RateLimitActivity.class)));
         findViewById(R.id.button_send_group_message).setOnClickListener(v ->
                 startActivity(new Intent(this, SendGroupMessageActivity.class)));
+        findViewById(R.id.button_delivery_status).setOnClickListener(v ->
+                startActivity(new Intent(this, DeliveryStatusActivity.class)));
     }
 
     @Override
@@ -135,6 +139,10 @@ public class MainActivity extends Activity {
     private void refreshQueueStatus() {
         groupNameView.setText(prefs.getGroupName());
         queueCountView.setText(getString(R.string.stats_queue_count, outboxRepository.countUnsent()));
+        deliverySummaryView.setText(getString(R.string.stats_delivery_summary,
+                outboxRepository.countByStatus("DELIVERED"),
+                outboxRepository.countByStatus("SENT"),
+                outboxRepository.countByStatus("FAILED", "DELIVERY_FAILED")));
 
         long nextBurstAt = SendQueueStatus.getNextBurstAtMillis();
         if (nextBurstAt > 0) {
