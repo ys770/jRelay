@@ -27,6 +27,7 @@ public class SmsStatusReceiver extends BroadcastReceiver {
         if (ACTION_SMS_SENT.equals(intent.getAction())) {
             outbox.recordPartSent(outboxId, success, resultCode);
             if (!success) {
+                SmsRetryScheduler.scheduleIfSafe(context, outboxId);
                 NotificationHelper.showSmsFailure(context, resultCode);
             }
         } else if (ACTION_SMS_DELIVERED.equals(intent.getAction())) {

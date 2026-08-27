@@ -71,7 +71,7 @@ public class OutboxRepository {
     public int countUnsent() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor c = db.rawQuery("SELECT COUNT(*) FROM " + DbHelper.TABLE_OUTBOX +
-                " WHERE status IN ('PENDING', 'SENDING')", null);
+                " WHERE status IN ('PENDING', 'SENDING', 'RETRY_PENDING')", null);
         int count = 0;
         if (c.moveToFirst()) {
             count = c.getInt(0);
@@ -101,7 +101,10 @@ public class OutboxRepository {
         cv.putNull("submitted_at");
         cv.putNull("delivered_at");
         cv.putNull("error_code");
-        db.update(DbHelper.TABLE_OUTBOX, cv, "id = ?", new String[]{String.valueOf(id)});
+        db.execSQL("UPDATE " + DbHelper.TABLE_OUTBOX + " SET parts_total = ?, parts_sent = 0, " +
+                        "parts_delivered = 0, submitted_at = NULL, delivered_at = NULL, error_code = NULL, " +
+                        "last_attempt_at = ?, attempt_count = attempt_count + 1, next_retry_at = NULL WHERE id = ?",
+                new Object[]{Math.max(1, partsTotal), System.currentTimeMillis(), id});
     }
 
     public void recordPartSent(long id, boolean success, int resultCode) {
@@ -141,10 +144,13 @@ public class OutboxRepository {
                     cv.put("status", "DELIVERED");
                     cv.put("delivered_at", System.currentTimeMillis());
                 }
-            } else if (!"FAILED".equals(status) && !"DELIVERY_FAILED".equals(status)) {
+            } else {
                 sent++;
                 cv.put("parts_sent", sent);
-                if (sent >= total) {
+                if ("RETRY_PENDING".equals(status)) {
+                    cv.put("status", "FAILED");
+                    cv.putNull("next_retry_at");
+                } else if (!"FAILED".equals(status) && !"DELIVERY_FAILED".equals(status) && sent >= total) {
                     cv.put("status", "SENT");
                     cv.put("submitted_at", System.currentTimeMillis());
                 }
@@ -162,6 +168,58 @@ public class OutboxRepository {
         cv.put("status", "FAILED");
         cv.put("error_code", errorCode);
         db.update(DbHelper.TABLE_OUTBOX, cv, "id = ?", new String[]{String.valueOf(id)});
+    }
+
+    /** Schedules a retry only when Android accepted no segment. Returns the retry time, or null. */
+    public Long scheduleAutoRetry(long id) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.beginTransaction();
+        try {
+            Cursor c = db.query(DbHelper.TABLE_OUTBOX,
+                    new String[]{"status", "parts_sent", "attempt_count"}, "id = ?",
+                    new String[]{String.valueOf(id)}, null, null, null);
+            if (!c.moveToFirst()) {
+                c.close();
+                db.setTransactionSuccessful();
+                return null;
+            }
+            String status = c.getString(0);
+            int sent = c.getInt(1);
+            int attempts = c.getInt(2);
+            c.close();
+            long delay = com.sh7411usa.jrelay.sms.SmsRetryPolicy.delayForAttemptCount(attempts);
+            if (!"FAILED".equals(status) || sent != 0 || delay < 0) {
+                db.setTransactionSuccessful();
+                return null;
+            }
+            long retryAt = System.currentTimeMillis() + delay;
+            ContentValues cv = new ContentValues();
+            cv.put("status", "RETRY_PENDING");
+            cv.put("next_retry_at", retryAt);
+            db.update(DbHelper.TABLE_OUTBOX, cv, "id = ?", new String[]{String.valueOf(id)});
+            db.setTransactionSuccessful();
+            return retryAt;
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    public boolean releaseScheduledRetry(long id) {
+        ContentValues cv = new ContentValues();
+        cv.put("status", "PENDING");
+        cv.putNull("next_retry_at");
+        return dbHelper.getWritableDatabase().update(DbHelper.TABLE_OUTBOX, cv,
+                "id = ? AND status = 'RETRY_PENDING' AND parts_sent = 0 AND next_retry_at <= ?",
+                new String[]{String.valueOf(id), String.valueOf(System.currentTimeMillis())}) == 1;
+    }
+
+    public boolean retryNow(long id) {
+        ContentValues cv = new ContentValues();
+        cv.put("status", "PENDING");
+        cv.putNull("next_retry_at");
+        return dbHelper.getWritableDatabase().update(DbHelper.TABLE_OUTBOX, cv,
+                "id = ? AND status IN ('FAILED', 'RETRY_PENDING') AND parts_sent = 0",
+                new String[]{String.valueOf(id)}) == 1;
     }
 
     public int countByStatus(String... statuses) {

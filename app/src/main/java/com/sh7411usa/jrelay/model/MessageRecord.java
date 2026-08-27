@@ -16,4 +16,8 @@ public class MessageRecord {
     public Integer partsTotal;
     public Integer partsSent;
     public Integer partsDelivered;
+    public Long outboxId;
+    public Integer attemptCount;
+    public Long lastAttemptAt;
+    public Long nextRetryAt;
 }

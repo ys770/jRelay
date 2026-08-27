@@ -115,6 +115,7 @@ public class SmsSendService extends Service {
         } catch (Exception e) {
             Log.e(TAG, "Failed to send SMS to " + item.phoneE164, e);
             outbox.markFailed(item.id, -1);
+            SmsRetryScheduler.scheduleIfSafe(this, item.id);
         }
     }
 

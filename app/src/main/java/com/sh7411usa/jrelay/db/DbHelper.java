@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DbHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "jrelay.db";
-    private static final int DB_VERSION = 4;
+    private static final int DB_VERSION = 5;
 
     public static final String TABLE_MEMBERS = "members";
     public static final String TABLE_MESSAGE_LOG = "message_log";
@@ -64,7 +64,10 @@ public class DbHelper extends SQLiteOpenHelper {
                 "parts_delivered INTEGER NOT NULL DEFAULT 0," +
                 "submitted_at INTEGER," +
                 "delivered_at INTEGER," +
-                "error_code INTEGER" +
+                "error_code INTEGER," +
+                "attempt_count INTEGER NOT NULL DEFAULT 0," +
+                "last_attempt_at INTEGER," +
+                "next_retry_at INTEGER" +
                 ")");
     }
 
@@ -83,6 +86,11 @@ public class DbHelper extends SQLiteOpenHelper {
         }
         if (oldVersion < 4) {
             backfillMessageLogIds(db);
+        }
+        if (oldVersion < 5) {
+            db.execSQL("ALTER TABLE " + TABLE_OUTBOX + " ADD COLUMN attempt_count INTEGER NOT NULL DEFAULT 0");
+            db.execSQL("ALTER TABLE " + TABLE_OUTBOX + " ADD COLUMN last_attempt_at INTEGER");
+            db.execSQL("ALTER TABLE " + TABLE_OUTBOX + " ADD COLUMN next_retry_at INTEGER");
         }
     }
 

@@ -28,6 +28,7 @@ public class UiUtil {
         switch (status) {
             case "PENDING": label = R.string.status_pending; break;
             case "SENDING": label = R.string.status_sending; break;
+            case "RETRY_PENDING": label = R.string.status_retry_pending; break;
             case "SENT": label = R.string.status_sent; break;
             case "DELIVERED": label = R.string.status_delivered; break;
             case "DELIVERY_FAILED": label = R.string.status_delivery_failed; break;

@@ -1,5 +1,12 @@
 # Version History
 
+## 1.19 - Safe SMS Retry
+
+- Added up to three automatic retries after 15, 30, and 60 minutes when Android rejects a message before any SMS segment is submitted.
+- Added a duplicate-safe **Retry** action to outbound Message Details; it is available only when zero segments were submitted.
+- Message Details now shows send-attempt count, last-attempt time, and next scheduled retry.
+- Multipart messages are never retried as a whole after even one segment was submitted, avoiding duplicate delivery of accepted segments.
+
 ## 1.18 - Long-Press Message Details
 
 - Added a long-press **Message Details** dialog to dashboard Recent Activity and each member's history while preserving the dashboard's normal tap-to-open-member behavior.

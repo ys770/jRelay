@@ -153,6 +153,10 @@ public class MessageRepository {
         r.partsTotal = nullableInt(c, "delivery_parts_total");
         r.partsSent = nullableInt(c, "delivery_parts_sent");
         r.partsDelivered = nullableInt(c, "delivery_parts_delivered");
+        r.outboxId = nullableLong(c, "outbox_id");
+        r.attemptCount = nullableInt(c, "delivery_attempt_count");
+        r.lastAttemptAt = nullableLong(c, "delivery_last_attempt_at");
+        r.nextRetryAt = nullableLong(c, "delivery_next_retry_at");
         return r;
     }
 
@@ -162,7 +166,9 @@ public class MessageRepository {
                 "o.error_code AS delivery_error_code, o.phone_e164 AS delivery_phone, " +
                 "o.enqueued_at AS delivery_enqueued_at, o.submitted_at AS delivery_submitted_at, " +
                 "o.delivered_at AS delivery_delivered_at, o.parts_total AS delivery_parts_total, " +
-                "o.parts_sent AS delivery_parts_sent, o.parts_delivered AS delivery_parts_delivered FROM " +
+                "o.parts_sent AS delivery_parts_sent, o.parts_delivered AS delivery_parts_delivered, " +
+                "o.id AS outbox_id, o.attempt_count AS delivery_attempt_count, " +
+                "o.last_attempt_at AS delivery_last_attempt_at, o.next_retry_at AS delivery_next_retry_at FROM " +
                 DbHelper.TABLE_MESSAGE_LOG + " ml " +
                 "LEFT JOIN " + DbHelper.TABLE_OUTBOX + " o ON o.message_log_id = ml.id";
         if (selection != null) {

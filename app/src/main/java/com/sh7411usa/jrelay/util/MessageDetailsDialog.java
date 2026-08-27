@@ -4,10 +4,13 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.telephony.SmsManager;
 import android.text.format.DateFormat;
+import android.widget.Toast;
 
 import com.sh7411usa.jrelay.R;
 import com.sh7411usa.jrelay.model.Member;
 import com.sh7411usa.jrelay.model.MessageRecord;
+import com.sh7411usa.jrelay.db.OutboxRepository;
+import com.sh7411usa.jrelay.sms.SmsSendService;
 
 public final class MessageDetailsDialog {
 
@@ -41,6 +44,11 @@ public final class MessageDetailsDialog {
             appendIfPresent(details, context.getString(R.string.details_queued), record.enqueuedAt);
             appendIfPresent(details, context.getString(R.string.details_submitted), record.submittedAt);
             appendIfPresent(details, context.getString(R.string.details_delivered), record.deliveredAt);
+            if (record.attemptCount != null) {
+                append(details, context.getString(R.string.details_attempts), String.valueOf(record.attemptCount));
+            }
+            appendIfPresent(details, context.getString(R.string.details_last_attempt), record.lastAttemptAt);
+            appendIfPresent(details, context.getString(R.string.details_next_retry), record.nextRetryAt);
             if (record.partsTotal != null) {
                 append(details, context.getString(R.string.details_segments),
                         context.getString(R.string.details_segment_progress,
@@ -52,10 +60,34 @@ public final class MessageDetailsDialog {
             }
         }
 
-        new AlertDialog.Builder(context)
+        AlertDialog.Builder builder = new AlertDialog.Builder(context)
                 .setTitle(R.string.message_details_title)
                 .setMessage(details.toString())
-                .setPositiveButton(android.R.string.ok, null)
+                .setPositiveButton(android.R.string.ok, null);
+        if (canRetry(record)) {
+            builder.setNeutralButton(R.string.action_retry, (dialog, which) -> confirmRetry(context, record.outboxId));
+        }
+        builder.show();
+    }
+
+    private static boolean canRetry(MessageRecord record) {
+        return record.outboxId != null && value(record.partsSent) == 0 &&
+                ("FAILED".equals(record.deliveryStatus) || "RETRY_PENDING".equals(record.deliveryStatus));
+    }
+
+    private static void confirmRetry(Context context, long outboxId) {
+        new AlertDialog.Builder(context)
+                .setTitle(R.string.retry_message_title)
+                .setMessage(R.string.retry_message_warning)
+                .setNegativeButton(android.R.string.cancel, null)
+                .setPositiveButton(R.string.action_retry, (dialog, which) -> {
+                    if (new OutboxRepository(context).retryNow(outboxId)) {
+                        SmsSendService.start(context);
+                        Toast.makeText(context, R.string.retry_queued, Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(context, R.string.retry_not_available, Toast.LENGTH_SHORT).show();
+                    }
+                })
                 .show();
     }
 

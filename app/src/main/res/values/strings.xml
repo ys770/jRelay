@@ -42,6 +42,9 @@
     <string name="details_queued">Queued</string>
     <string name="details_submitted">Submitted</string>
     <string name="details_delivered">Delivered</string>
+    <string name="details_attempts">Send attempts</string>
+    <string name="details_last_attempt">Last attempt</string>
+    <string name="details_next_retry">Next retry</string>
     <string name="details_segments">SMS segments</string>
     <string name="details_segment_progress">%1$d submitted, %2$d delivered, %3$d total</string>
     <string name="details_error">Error</string>
@@ -58,6 +61,12 @@
     <string name="sms_error_no_service">No cellular service</string>
     <string name="sms_error_limit">Outgoing SMS limit exceeded</string>
     <string name="sms_error_fdn">Blocked by fixed dialing rules</string>
+    <string name="action_retry">Retry</string>
+    <string name="retry_message_title">Retry Message?</string>
+    <string name="retry_message_warning">Android reported that no SMS segments were submitted. Retry this message now?</string>
+    <string name="retry_queued">Message queued for retry.</string>
+    <string name="retry_not_available">Retry is no longer safe or available.</string>
+    <string name="status_retry_pending">Retry scheduled</string>
 
     <!-- Membership -->
     <string name="membership_title">Members</string>
