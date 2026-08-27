@@ -17,8 +17,8 @@ public class Prefs {
     private static final String DEFAULT_GROUP_NAME = "jRelay";
     private static final int DEFAULT_BURST_MIN = 3;
     private static final int DEFAULT_BURST_MAX = 5;
-    private static final int DEFAULT_MIN_WAIT = 10;
-    private static final int DEFAULT_MAX_WAIT = 12;
+    private static final int DEFAULT_MIN_WAIT = 3;
+    private static final int DEFAULT_MAX_WAIT = 8;
 
     private final SharedPreferences prefs;
 

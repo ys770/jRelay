@@ -1,9 +1,5 @@
 # Version History
 
-## 1.20 - Safer Default Send Pacing
-
-- Increased the default delay between 3–5 message bursts from 3–8 seconds to 10–12 seconds, keeping the fastest sustained rate below 1,000 messages per 30 minutes.
-
 ## 1.19 - Safe SMS Retry
 
 - Added up to three automatic retries after 15, 30, and 60 minutes when Android rejects a message before any SMS segment is submitted.
