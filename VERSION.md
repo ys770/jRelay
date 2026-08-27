@@ -1,5 +1,9 @@
 # Version History
 
+## 1.20 - Member History Long-Press Fix
+
+- Fixed member message-history rows being rebuilt by the one-second delivery-status refresh while they were being held, which could cancel the Message Details long-press gesture.
+
 ## 1.19 - Safe SMS Retry
 
 - Added up to three automatic retries after 15, 30, and 60 minutes when Android rejects a message before any SMS segment is submitted.

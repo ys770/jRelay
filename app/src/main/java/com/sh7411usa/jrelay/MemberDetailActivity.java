@@ -10,6 +10,7 @@ import android.os.Looper;
 import android.provider.ContactsContract;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -46,11 +47,12 @@ public class MemberDetailActivity extends Activity {
     private LinearLayout activityContainer;
     private Button adminButton;
     private Button muteButton;
+    private boolean messageTouchActive;
     private final Handler statusHandler = new Handler(Looper.getMainLooper());
     private final Runnable statusRefresh = new Runnable() {
         @Override
         public void run() {
-            if (member != null) {
+            if (member != null && !messageTouchActive) {
                 renderActivity();
             }
             statusHandler.postDelayed(this, STATUS_REFRESH_MS);
@@ -165,6 +167,15 @@ public class MemberDetailActivity extends Activity {
             row.setFocusable(true);
             row.setLongClickable(true);
             row.setBackgroundResource(R.drawable.focus_highlight);
+            row.setOnTouchListener((v, event) -> {
+                if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                    messageTouchActive = true;
+                } else if (event.getActionMasked() == MotionEvent.ACTION_UP ||
+                        event.getActionMasked() == MotionEvent.ACTION_CANCEL) {
+                    messageTouchActive = false;
+                }
+                return false;
+            });
             row.setOnLongClickListener(v -> {
                 MessageDetailsDialog.show(this, record, member);
                 return true;
