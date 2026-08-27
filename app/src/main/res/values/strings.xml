@@ -24,7 +24,6 @@
     <string name="stats_delivery_summary">Delivered: %1$d  Submitted: %2$d  Failed: %3$d</string>
     <string name="stats_next_burst">Next burst in %1$s (%2$d messages)</string>
     <string name="send_group_message_shortcut">Send to Group</string>
-    <string name="view_delivery_status">Delivery Status</string>
     <string name="recent_activity">Recent Activity</string>
     <string name="no_activity_yet">No activity yet.</string>
 
@@ -124,15 +123,11 @@
     <string name="notification_admin_title">Admin message</string>
     <string name="notification_channel_sms_status">SMS Delivery Problems</string>
     <string name="notification_sms_failed_title">SMS failed to send</string>
-    <string name="notification_sms_failed_body">Android rejected an outgoing SMS (error %1$d). Open Delivery Status for details.</string>
+    <string name="notification_sms_failed_body">Android rejected an outgoing SMS (error %1$d). See Recent Activity for details.</string>
     <string name="notification_delivery_failed_title">SMS was not delivered</string>
-    <string name="notification_delivery_failed_body">The carrier reported a delivery failure (error %1$d). Open Delivery Status for details.</string>
+    <string name="notification_delivery_failed_body">The carrier reported a delivery failure (error %1$d). See Recent Activity for details.</string>
 
     <!-- Delivery status -->
-    <string name="delivery_status_title">Delivery Status</string>
-    <string name="delivery_status_explanation">Submitted means Android and the carrier accepted the message. Delivered means the recipient network returned a delivery report. Some carriers do not provide delivery reports, so submitted messages can remain submitted.</string>
-    <string name="delivery_status_empty">No outgoing messages yet.</string>
-    <string name="delivery_status_meta">%1$s • %2$s • %3$s</string>
     <string name="delivery_status_error">%1$s (error %2$d)</string>
     <string name="status_pending">Queued</string>
     <string name="status_sending">Sending</string>

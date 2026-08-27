@@ -1,5 +1,12 @@
 # Version History
 
+## 1.14 - Inline Delivery Status
+
+- Linked every newly queued outbox row to its exact outbound message-log row through a non-destructive SQLite v2-to-v3 migration.
+- Added Queued, Sending, Submitted, Delivered, Send Failed, and Delivery Failed labels directly beneath outbound messages in both dashboard Recent Activity and each member's message history.
+- Kept the compact dashboard delivery totals and failure notifications, while removing the separate Delivery Status button/screen so status appears in the normal message workflow.
+- Existing message and outbox history remains intact; exact inline linkage begins with messages created after upgrading to 1.14.
+
 ## 1.13 - SMS Send and Delivery Reporting
 
 - Added per-part `PendingIntent` callbacks for both SMS submission and carrier delivery reports, including multipart messages.

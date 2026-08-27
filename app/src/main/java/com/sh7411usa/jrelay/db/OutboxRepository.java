@@ -15,11 +15,6 @@ public class OutboxRepository {
         public Long memberId;
         public String phoneE164;
         public String body;
-        public String status;
-        public long enqueuedAt;
-        public Long submittedAt;
-        public Long deliveredAt;
-        public Integer errorCode;
     }
 
     private final DbHelper dbHelper;
@@ -28,12 +23,13 @@ public class OutboxRepository {
         dbHelper = DbHelper.getInstance(context);
     }
 
-    public void enqueue(Long memberId, String phoneE164, String body) {
+    public void enqueue(Long memberId, long messageLogId, String phoneE164, String body) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
         if (memberId != null) {
             cv.put("member_id", memberId);
         }
+        cv.put("message_log_id", messageLogId);
         cv.put("phone_e164", phoneE164);
         cv.put("body", body);
         cv.put("enqueued_at", System.currentTimeMillis());
@@ -185,29 +181,4 @@ public class OutboxRepository {
         return count;
     }
 
-    public List<OutboxItem> getRecent(int limit) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor c = db.query(DbHelper.TABLE_OUTBOX, null, null, null, null, null,
-                "enqueued_at DESC", String.valueOf(limit));
-        List<OutboxItem> list = new ArrayList<>();
-        while (c.moveToNext()) {
-            OutboxItem item = new OutboxItem();
-            item.id = c.getLong(c.getColumnIndexOrThrow("id"));
-            int memberIdx = c.getColumnIndexOrThrow("member_id");
-            item.memberId = c.isNull(memberIdx) ? null : c.getLong(memberIdx);
-            item.phoneE164 = c.getString(c.getColumnIndexOrThrow("phone_e164"));
-            item.body = c.getString(c.getColumnIndexOrThrow("body"));
-            item.status = c.getString(c.getColumnIndexOrThrow("status"));
-            item.enqueuedAt = c.getLong(c.getColumnIndexOrThrow("enqueued_at"));
-            int submittedIdx = c.getColumnIndexOrThrow("submitted_at");
-            item.submittedAt = c.isNull(submittedIdx) ? null : c.getLong(submittedIdx);
-            int deliveredIdx = c.getColumnIndexOrThrow("delivered_at");
-            item.deliveredAt = c.isNull(deliveredIdx) ? null : c.getLong(deliveredIdx);
-            int errorIdx = c.getColumnIndexOrThrow("error_code");
-            item.errorCode = c.isNull(errorIdx) ? null : c.getInt(errorIdx);
-            list.add(item);
-        }
-        c.close();
-        return list;
-    }
 }

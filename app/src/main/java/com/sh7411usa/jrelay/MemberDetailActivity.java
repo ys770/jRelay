@@ -20,6 +20,7 @@ import com.sh7411usa.jrelay.model.Member;
 import com.sh7411usa.jrelay.model.MessageRecord;
 import com.sh7411usa.jrelay.sms.CommandProcessor;
 import com.sh7411usa.jrelay.sms.PhoneNumberUtils;
+import com.sh7411usa.jrelay.util.UiUtil;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -131,7 +132,13 @@ public class MemberDetailActivity extends Activity {
             TextView bodyView = row.findViewById(R.id.text_message_body);
             TextView metaView = row.findViewById(R.id.text_message_meta);
             bodyView.setText(record.body);
-            metaView.setText(DateFormat.format("MMM d, h:mm a", record.timestamp));
+            String meta = DateFormat.format("MMM d, h:mm a", record.timestamp).toString();
+            String deliveryStatus = UiUtil.deliveryStatusLabel(this,
+                    record.deliveryStatus, record.deliveryErrorCode);
+            if (deliveryStatus != null) {
+                meta += " • " + deliveryStatus;
+            }
+            metaView.setText(meta);
             activityContainer.addView(row);
         }
     }

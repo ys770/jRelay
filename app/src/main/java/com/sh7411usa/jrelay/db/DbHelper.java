@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DbHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "jrelay.db";
-    private static final int DB_VERSION = 2;
+    private static final int DB_VERSION = 3;
 
     public static final String TABLE_MEMBERS = "members";
     public static final String TABLE_MESSAGE_LOG = "message_log";
@@ -52,6 +52,7 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE " + TABLE_OUTBOX + " (" +
                 "id INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "member_id INTEGER," +
+                "message_log_id INTEGER," +
                 "phone_e164 TEXT NOT NULL," +
                 "body TEXT NOT NULL," +
                 "enqueued_at INTEGER NOT NULL," +
@@ -74,6 +75,9 @@ public class DbHelper extends SQLiteOpenHelper {
             db.execSQL("ALTER TABLE " + TABLE_OUTBOX + " ADD COLUMN submitted_at INTEGER");
             db.execSQL("ALTER TABLE " + TABLE_OUTBOX + " ADD COLUMN delivered_at INTEGER");
             db.execSQL("ALTER TABLE " + TABLE_OUTBOX + " ADD COLUMN error_code INTEGER");
+        }
+        if (oldVersion < 3) {
+            db.execSQL("ALTER TABLE " + TABLE_OUTBOX + " ADD COLUMN message_log_id INTEGER");
         }
     }
 

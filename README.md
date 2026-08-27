@@ -33,15 +33,10 @@ Below that is a checkbox, "You have read and accept the terms of the license," w
 - **Messages in Queue** — how many outbox messages are waiting to go out or mid-send right now.
 - **Delivered / Submitted / Failed** — live outbound status totals. Submitted means Android/the carrier accepted the SMS; Delivered means the recipient network returned a delivery report. Some carriers do not provide delivery reports.
 - **Next burst in Xs (N messages)** — a live countdown (updates every second) to when the send service will fire its next burst, and how many messages that burst will contain. Hidden when nothing is scheduled (queue empty, or a burst is actively sending).
-- A scrollable feed of the most recent activity across the whole group, with a thin separator between each entry. Tapping an entry opens that member's detail screen.
+- A scrollable feed of the most recent activity across the whole group, with a thin separator between each entry. Outbound entries show their queued/submitted/delivered/failed state beneath the message. Tapping an entry opens that member's detail screen.
 - **Add Member** shortcut.
-- Buttons to open the **Membership** screen, the Rate Limiting screen (labeled **Configure**), **Send to Group**, and **Delivery Status**.
-
-### Delivery Status
-
-- Shows the 100 most recent outbound messages with their recipient, queued/submitted/delivered/failed state, timestamp, and Android/carrier error code when available.
-- Send and delivery failures trigger a notification on the host device.
-- Delivery reports depend on recipient carrier support. A message can remain Submitted even when it was delivered if no delivery report is returned.
+- Buttons to open the **Membership** screen, the Rate Limiting screen (labeled **Configure**), and **Send to Group**.
+- Send and delivery failures trigger a notification on the host device. Delivery reports depend on recipient carrier support, so a message can remain Submitted even when it was delivered if no report is returned.
 
 ### Membership
 
@@ -64,6 +59,7 @@ Tapping a member shows:
 - Nickname and phone number.
 - Member since date, last activity timestamp, messages sent/received counts, and an activity level (Very active / Active / Quiet / Inactive) based on their message volume over the last 7 days.
 - A scrollable feed of that member's recent activity.
+- Outbound activity entries show their queued/submitted/delivered/failed state beneath the message.
 
 Actions available:
 

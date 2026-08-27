@@ -7,4 +7,6 @@ public class MessageRecord {
     public String category;
     public String body;
     public long timestamp;
+    public String deliveryStatus;
+    public Integer deliveryErrorCode;
 }

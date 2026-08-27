@@ -92,8 +92,6 @@ public class MainActivity extends Activity {
                 startActivity(new Intent(this, RateLimitActivity.class)));
         findViewById(R.id.button_send_group_message).setOnClickListener(v ->
                 startActivity(new Intent(this, SendGroupMessageActivity.class)));
-        findViewById(R.id.button_delivery_status).setOnClickListener(v ->
-                startActivity(new Intent(this, DeliveryStatusActivity.class)));
     }
 
     @Override
@@ -188,7 +186,13 @@ public class MainActivity extends Activity {
                     memberLabel = m.nickname + " • ";
                 }
             }
-            metaView.setText(memberLabel + DateFormat.format("MMM d, h:mm a", record.timestamp));
+            String meta = memberLabel + DateFormat.format("MMM d, h:mm a", record.timestamp);
+            String deliveryStatus = UiUtil.deliveryStatusLabel(this,
+                    record.deliveryStatus, record.deliveryErrorCode);
+            if (deliveryStatus != null) {
+                meta += " • " + deliveryStatus;
+            }
+            metaView.setText(meta);
 
             if (record.memberId != null) {
                 long memberId = record.memberId;

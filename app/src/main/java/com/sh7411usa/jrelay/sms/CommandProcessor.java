@@ -297,8 +297,8 @@ public class CommandProcessor {
     }
 
     private void enqueue(Member recipient, String message, String category) {
-        outboxRepository.enqueue(recipient.id, recipient.phoneE164, message);
-        messageRepository.log(recipient.id, "OUT", category, message);
+        long messageLogId = messageRepository.log(recipient.id, "OUT", category, message);
+        outboxRepository.enqueue(recipient.id, messageLogId, recipient.phoneE164, message);
     }
 
     private String stripLeadingWord(String text) {
